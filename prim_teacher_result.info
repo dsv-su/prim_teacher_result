@@ -1,0 +1,13 @@
+name = Prim teacher result 
+description = Allows teacher to view their result
+package = DSV modules
+version = "7.x-1.0-dev"
+
+; Core version (required)
+core = 7.x
+
+; Loadable code files
+files[] = prim_teacher_result.module
+
+; Module dependencies
+dependencies[] = webform

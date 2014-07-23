@@ -1,0 +1,597 @@
+<?php
+
+/**
+ * @file
+ * TODO: write description.
+ */
+
+/**
+ * Implementation of hook_menu()
+ */
+function prim_teacher_result_permission () {
+  return array(
+    'view teacher result tab' => array(
+      'title' => t('View teacher result tab'), 
+      'description' => t('Shows the teacher result tab.'),
+      'restrict access' => TRUE,
+    ),
+    'administer Prim matrix' => array(
+      'title' => t('Administer Prim matrix'),
+      'description' => t('Perform maintenance tasks for Prim matrix'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_page_alter()
+ */
+function prim_teacher_result_page_alter(&$page){
+   
+  // Adds the text in field_result_info from the resultatrapport content type to Dina registreringar tab.
+  if(arg(0) == 'node' && (arg(2) == 'webform-results' || arg(2) == 'prim-teacher-result')) {
+    $node = node_load(arg(1));
+    $items = field_get_items('node', $node, 'field_result_info', $node->language);
+    if(isset($page['content']['system_main']['main']['#markup'])){
+      $page['content']['system_main']['main']['#markup'] = '<div>'.$items[0]['value'] .'</div>'. $page['content']['system_main']['main']['#markup'];
+    }    
+    drupal_add_css(drupal_get_path('module','prim_teacher_result').'/css/prim_teacher_tweak_cck_download.css');
+  }
+  // Adds the text in field_download_info from the resultatrapport content type to Download tab. 
+  if(arg(0) == 'node' && (arg(2) == 'download')) {
+    $node = node_load(arg(1));
+    $items = field_get_items('node', $node, 'field_download_info', $node->language);
+    $page['content']['system_main']['format']['#title'] = '<div><span>'.$items[0]['value'] .'</span></div><br/>'. $page['content']['system_main']['format']['#title'];
+    $page['content']['system_main']['main']['#weight'] = -10;
+    drupal_add_css(drupal_get_path('module','prim_teacher_result').'/css/prim_teacher_tweak_cck_download.css');
+    // Hide download options for teachers
+    if(is_prim_teacher()) {
+      drupal_add_css(drupal_get_path('module','prim_teacher_result').'/css/prim_teacher_hide_download.css');    
+    }
+  }
+
+  // Remove print and PDF links for submissions
+  if(arg(0)=='node'&& arg(2)=='submission'){
+    unset($page['content']['system_main']['#submission_actions']);
+  }
+}
+
+/**
+ * Implementation of hook_menu_alter()
+ */
+/* We use jQuery instead see prim_teacher_result_node_view
+function prim_teacher_result_menu_alter(&$items){
+  $node = node_load(arg(1));
+  $items['node/%node/view']['title'] = t('Ny registrering');
+}
+*/
+
+/**
+* Implementation of hook_webform_submission_load()
+*/
+function prim_teacher_result_webform_submission_load(&$submissions){
+  //adds a jquery file that tweaks the submissions result table
+  global $user;
+
+  if (in_array('authenticated user', $user->roles) && is_prim_teacher()) {
+      //this is a teacher, so anvandare name and ip address are not visible
+      if (arg(0) == 'node' &&  arg(2)=='prim-teacher-result'){
+        drupal_add_js(drupal_get_path('module','prim_teacher_result').'/js/prim_results_table_tweaks_teacher.js');  
+      }
+  } else {
+      if (arg(0) == 'node' &&  arg(2)=='webform-results' && arg(3) == 'table'){
+        drupal_add_js(drupal_get_path('module','prim_teacher_result').'/js/prim_results_table_tweaks_admin_detailed.js');
+      }
+      elseif (arg(0) == 'node' &&  (arg(2)=='webform-results' || arg(2)=='prim-teacher-result')) {
+        drupal_add_js(drupal_get_path('module','prim_teacher_result').'/js/prim_results_table_tweaks_admin.js');
+      }
+  }
+}
+
+/**
+ * Implementation of hook_theme()
+ */
+function prim_teacher_result_theme($existing, $type, $theme, $path) {
+  return array(
+    'prim_teacher_result_matrix' => array(
+      'variables' => array('vars'=> NULL), 
+      'template' => 'prim-teacher-result-matrix',
+    ),
+    'prim_teacher_result_questions' => array(
+      'variables' => array('vars'=> NULL), 
+      'template' => 'prim-teacher-result-questions',
+    ),
+    'teacher_results_submissions_header' => array(
+      'variables' => array('node' => NULL),
+      'file' => 'includes/teacher.report.inc',
+    ),
+    'teacher_results_submissions' => array(
+      'variables' => array('node' => NULL, 'components' => NULL, 'submissions' => NULL, 'node' => NULL, 'total_count' => NULL, 'pager_count' => NULL),
+      'file' => 'includes/teacher.report.inc',
+    )
+  );
+}
+
+/**
+ * This function hides the teacher result tab for administrator and formuläradmin
+ */
+function teacher_results_access($node) {
+  global $user;
+
+  if(user_access('view teacher result tab') && $node->type == 'resultatrapport') {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+function is_prim_teacher() {
+  global $user;
+
+  if((!in_array('formuläradmin', $user->roles) && !in_array('administrator', $user->roles))) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+function matrix_tab_access($node) {
+  if ($node->type == 'resultatrapport') {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+/**
+* Implementation of hook_init()
+*/
+function prim_teacher_result_init(){
+  drupal_add_css(drupal_get_path('module','prim_teacher_result').'/css/prim_teacher_result.css');
+  drupal_add_css(drupal_get_path('module','prim_teacher_result').'/css/prim_teacher_result_print.css',array('media'=>'print'));
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function prim_teacher_result_menu() {
+  $items['node/%webform_menu/prim-teacher-result'] = array(
+    'title' => t('Dina registreringar'),
+    'page callback' => 'teacher_results_submissions',
+    'page arguments' => array(1, TRUE, '50'),
+    'access callback' => 'teacher_results_access',
+    'access arguments' => array(1),
+    'file' => 'includes/teacher.report.inc',
+    //'file path' => drupal_get_path('module', 'webform'),
+    'weight' => 10,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%webform_menu/download'] = array(
+    'title' => t('Download'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('teacher_results_download_form', 1),
+    'access arguments' => array('view teacher result tab'),
+    'file' => 'includes/teacher.report.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%webform_menu/submission/%webform_menu_submission/matrix'] = array(
+    'title' => t('Visa matris'),
+    'page callback' => 'student_matrix',
+    'page arguments' => array(1),
+    'access callback' => 'matrix_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['node/%webform_menu/submission/%webform_menu_submission/registrations'] = array(
+    'title' => t('Dina registreringar'),
+    'page callback' => 'back_to_list',
+    'page arguments' => array(1),
+    'access callback' => 'is_prim_teacher',
+    //'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+  );
+  $items['admin/prim/prim_teacher_result'] = array(
+    'title' => 'Prim matrix',
+    'description' => 'Configure Prim matrix settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('prim_teacher_result_admin_form'),
+    'access arguments' => array('administer Prim matrix'),
+    'file' => 'includes/prim_teacher_result.admin.inc',
+  );
+  return $items;
+}
+
+
+function back_to_list($node) {
+  drupal_goto("node/$node->nid/prim-teacher-result");
+}
+
+
+/**
+ * TODO: write description.
+ * This function is not used currently.
+ */
+function teacher_results_table($node, $pager_count = 0) {
+  global $user;
+
+  if (isset($_GET['results']) && is_numeric($_GET['results'])) {
+    $pager_count = $_GET['results'];
+  }
+
+  // Get all the submissions for the node for the current loged in user.
+  $header = theme('teacher_results_table_header', array('node' => $node));
+  $submissions = webform_get_submissions(array('nid' => $node->nid, 
+                                               'uid' => $user->uid), $header, $pager_count);
+  $total_count = webform_get_submission_count($node->nid);
+
+  $output = theme('teacher_results_table', array('node' => $node,
+                                                 'components' => $node->webform['components'], 
+                                                 'submissions' => $submissions, 
+                                                 'total_count' => $total_count, 
+                                                 'pager_count' => $pager_count));
+  if ($pager_count) {
+    $output .= theme('pager');
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_form_alter()
+ */
+function prim_teacher_result_form_alter(&$form,&$form_state,$form_id){
+   //this snippet adds the destination to the form action array value of the form but only if the destination is not provided. This action is applied only for webform_submission_delete form id. It fixes the bug of "Access denied" after deletion for authenticated users who delete the submission by going to view the submission first instead of delete the submission from the list
+   if ($form_id == 'webform_submission_delete_form' && arg(0)=='node'){
+     if(strpos($form['#action'],'&destination')===FALSE){$form['#action'] = $form['#action']."&destination=node/".arg(1)."/webform-results"; 
+    }
+  }
+  // This will make IP-adress and Användar-ID unselected 
+  if($form_id == 'teacher_results_download_form') {
+    unset( $form['components']['#default_value'][5]);
+    unset( $form['components']['#default_value'][6]); 
+  }
+  if($form_id == 'webform_components_form' && isset($form['add']['type']['#options'])){
+    $form['add']['type']['#options']['date'] = 'Date';
+    $form['add']['type']['#options']['email'] = 'E-mail';
+    $form['add']['type']['#options']['fieldset'] = 'Fieldset';
+    $form['add']['type']['#options']['file'] = 'File';
+    $form['add']['type']['#options']['grid'] = 'Grid';
+    $form['add']['type']['#options']['hidden'] = 'Hidden';
+    $form['add']['type']['#options']['markup'] = 'Markup';
+    $form['add']['type']['#options']['pagebreak'] = 'Pagebreak';
+    $form['add']['type']['#options']['select'] = 'Select';
+    $form['add']['type']['#options']['textarea'] = 'Textarea';
+    $form['add']['type']['#options']['textfield'] = 'Textfield';
+    $form['add']['type']['#options']['time'] = 'Time';
+  }
+ 
+  // This alter is only for node type "resultatrapport" and element type "select"
+  // within the forms webform_component_edit_form and webform_component_add_form
+  if(($form_id == 'webform_component_edit_form' || $form_id == 'webform_component_add_form') &&
+      $form_state['build_info']['args'][0]->type == 'resultatrapport' &&
+      $form_state['build_info']['args'][1]['type'] == 'select'){
+
+    // Fetch prim_question checkbox status to $default
+    if(arg(4) && arg(4) != 'new') {
+      $extra = db_query(
+        "SELECT extra FROM webform_component WHERE nid = :nid AND cid = :cid",
+        array(':nid' => arg(1), ':cid' => arg(4))
+      )->fetchField();
+
+      $extra = unserialize($extra);
+      if(isset($extra['prim_question']['check'])) {
+        $default = $extra['prim_question']['check'];
+      }
+    }
+
+    $form['extra']['prim_question']['check']=array(
+      '#type' => 'checkbox',
+      '#title' => t('Matris fråga'),
+      '#description' => t('<b>"Customize keys (Advanced)"</b> måste vara i kryssad för att detta ska fungera.<br /> 
+        <b>NYCKEL:</b> I detta fällt fylls betyg i detta skall vara en versal. Direkt efter betyget skrivs förkortningen 
+        av en förmåga in med gemener. När dessa kryssas för kommer de att bli gröna i Matrisen. Man kan även ange 
+        "Inget svar", "ej svar", "ingetsvar" eller "ejsvar" som nyckel dessa alternativ kommer att bli gråa i Matrisen 
+        om de kryssas i. Om ett värde fylls i som inte har nämnts här ovan t.e.x fel eller 0p så kommer dessa visas som 
+        vita i Matrisen, men <b>undvik att använda "0"</b> då detta kan bidra till problem.<br /> 
+        <b>EXEMPEL PÅ NYCKLAR:</b> Ab, Epl, Cm, Bp. <br />
+        VÄRDE: Detta fält kan fyllas i med vad som helst, fältet innehåller texten som kommer att visas för 
+        användaren. <br />
+        <b>EXEMPEL PÅ VÄRDEN:</b> Ab, 2poäng (Cpl+), op, Fel svar.'),
+      '#default_value' => (isset($default) ? $default : 0), 
+    );
+  }
+}
+
+function student_matrix($node) {
+  drupal_add_css(drupal_get_path('module', 'prim-teacher-result') . '/css/prim-teacher-result.css', array());
+
+  $grades = array();
+  $grades = init_grades($grades, 'all');
+  $grades = init_grades($grades, 'correct');
+  $grades = init_grades($grades, 'noanswer');
+  
+  $isconditional = array();
+  //Find out which questions are active and which are not
+  $isconditional = check_for_conditional(arg(1), arg(3), TRUE);
+  //If there are no active questions
+  if (empty($isconditional)){
+    //Fill all fields with all empty Questions
+    $isconditional = check_for_conditional(arg(1), arg(3), FALSE);
+    $grades = build_questions($grades, $isconditional, arg(1));
+  }
+  //If there are active Questions
+  else {
+    //Fill in required question fields and determine if they are correct or not
+    $grades = build_questions($grades, $isconditional, arg(1));
+
+    //Fills in all fields that are not active as we must show all regardless
+    $isconditional = check_for_conditional(arg(1), arg(3), FALSE);
+    $grades = build_questions($grades, $isconditional, arg(1));
+  }
+  $grades = count_grades('E', 'all', $grades);
+  $grades = count_grades('C', 'all', $grades);
+  $grades = count_grades('A', 'all', $grades);
+  $grades = count_grades('E', 'correct', $grades);
+  $grades = count_grades('C', 'correct', $grades);
+  $grades = count_grades('A', 'correct', $grades);
+  
+  //Find out Student Names value
+  $elevensnamn = get_student_name(arg(1),arg(3)); 
+
+  //Theme the Matrix with the previously worked out values
+  return theme('prim_teacher_result_matrix',array('grades'=>$grades, 'node'=>$node, 'elevensnamn'=>$elevensnamn));
+}
+
+//Find out the student name of the specific page
+function get_student_name($nid, $sid){
+  $query = db_select('webform_component', 'c');
+  $query
+    ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);
+  $query
+    ->fields('c', array('cid'))
+    ->fields('sd', array('data'))
+    ->condition('c.nid', $nid, '=')
+    ->condition('c.form_key', 'elevens_namn', '=')
+    ->orderBy('c.cid', 'ASC');
+  $result = $query->execute();
+
+  foreach ($result as $row) {
+    $elevensnamn = $row->data;
+    if (!$elevensnamn) {
+      $elevensnamn = t($sid);
+    }
+
+  }
+  return $elevensnamn;
+}
+
+//Works out if a question is correct or not. Adds value to the respective areas.
+function build_questions($grades, $condvals, $nid){
+
+  foreach ($condvals as $pid){
+    $query = db_select('webform_component', 'c');
+    $query
+      ->fields('c', array('nid', 'cid', 'pid', 'name','form_key', 'type', 'extra'))
+      ->condition('c.nid', $nid, '=')
+      ->condition('c.extra', '%prim_question";a:1:{s:5:"check";i:1;}%', 'LIKE')
+      ->condition('c.pid', $pid, '=')
+      ->orderBy('c.cid', 'ASC');
+    $result = $query->execute();
+
+    foreach ($result as $row) {
+      $question = trim(str_replace('uppgift', '', $row->name), ' ');
+
+      foreach ($row as $key => $value) {
+        if($key == 'extra') {
+          $extra = unserialize($value);
+          $extraArr = explode("\n", $extra['items']);
+
+          $multipleArr = explode("\n", $extra['multiple']);
+
+          $items = array(); 
+          $points = array(); 
+
+          foreach ($extraArr as $key => $value) {
+            if(!empty($value)) {
+              $items = item_cleaner($items, $value);
+            } 
+          } // End foreach extraArr as key => value
+          $items = array_reverse($items);
+
+          //Find out if the question has been answered correctly
+          $points = question_answered($points, $row->cid, arg(1), arg(3), $multipleArr, $items);
+
+          //Fill all questions into the grades - all array
+          $grades = assign_grades($items, $question, $grades, 'all');
+          //Fill all correct questions into the grades - correct5 array
+          $grades = assign_grades($points, $question, $grades, 'correct');
+          //$grades = assign_grades($noanswer, $question, $grades, 'noanswer');
+        }
+      } 
+    }
+  }
+  return $grades;
+}
+//Check if the Question has been answered
+function question_answered($points, $cid, $nid, $sid, $multipleArr, $items){
+  $query = db_select('webform_submitted_data', 'sd');
+  $query
+    ->fields('sd', array('data'))
+    ->condition('sd.cid', $cid, '=')
+    ->condition('sd.nid', $nid, '=')
+    ->condition('sd.sid', $sid, '=');
+  $result = $query->execute();
+
+  $noarr = array('ingetsvar', 'ejsvar', 'fel');
+  $removechar = array(' ', '.', '!');
+  $hasvalue = false;
+
+  foreach ($result as $row) {
+    $selVal = $row->data;
+    $uselVal = '';
+    if ($multipleArr[0] == 0) {
+      foreach ($items as $key => $value) {
+        $cleanVal = str_replace($removechar, '', strtolower($selVal));
+        if (strpos($selVal, '+') !== false) {
+          list($selVal, $uselVal) = explode('+', $selVal);
+          if ($selVal == $uselVal) {
+            $selVal = $selVal.'_2';
+            $uselVal = $uselVal.'_1';
+          }
+        }
+        if(in_array($cleanVal, $noarr)) {
+          $noanswer[$key] = $value;
+        }
+        elseif($selVal == $key || $uselVal == $key || $hasvalue) {
+          $points[$key] = $value;
+          $hasvalue = true;
+        }
+
+      }// End foreach itema as key => value
+    }
+    elseif ($multipleArr[0] == 1) {
+      $points = item_cleaner($points, $selVal);
+    }
+  }
+  return $points;
+}
+
+//Clean up all the webform key values in the arrays
+function item_cleaner($items, $value){
+  if (strpos($value, '|') !== false) {
+    list($k, $v) = explode('|', $value);
+  }
+  else {
+    $k = $value;
+  }
+  if (strpos($k, '+') !== false) {
+    list($k, $uk) = explode('+', $k);
+    if ($k == $uk) {
+      $k = $k.'_1';
+      $uk = $uk.'_2';
+    }
+  }
+  if (strpos($k,'_') !== false) {
+    list($l, $w) = explode('_', $k);
+  }
+  else {
+    $l = $k;
+  }
+  if (!in_array($k, $items)) {
+    $items[$k] = $l;
+  }
+  if (isset($uk)){
+    if (strpos($uk,'_') !== false) {
+      list($ul, $uw) = explode('_', $uk);
+    }
+    else {
+      $ul = $uk;
+    }
+    if (!in_array($uk, $items)) {
+      $items[$uk] = $ul;
+    }
+  }
+  return $items;
+}
+
+//Find out which question areas are avaliable
+function check_for_conditional($nid, $sid, $active) {
+  $isconditional = array();
+  $query = db_select('webform_component', 'c');
+  $query
+    ->fields('c', array('nid', 'cid', 'pid', 'name','form_key', 'type', 'extra'))
+    ->condition('c.nid', $nid, '=')
+    ->condition('c.type', 'fieldset', '=')
+    ->orderBy('c.cid', 'ASC');
+  $result = $query->execute();
+
+  foreach ($result as $row) {
+    foreach ($row as $key => $value) {
+      if($key == 'extra') {
+        $extra = unserialize($value);
+        if (array_key_exists('webform_conditional_cid', $extra)){
+          $extraArr = explode("\n", $extra['webform_conditional_cid']);
+          $pidquery = db_select('webform_component', 'c');
+          $pidquery
+            ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);
+          $pidquery
+            ->fields('c', array('cid'))
+            ->fields('sd', array('data'))
+            ->condition('c.cid', $extraArr[0], '=')
+            ->condition('c.nid', $nid, '=')
+            ->orderBy('c.cid', 'ASC');
+          $pidresult = $pidquery->execute();
+          foreach ($pidresult as $pidrow) {
+            if ($pidrow->data == 1 AND $active == TRUE){
+              $isconditional[] = $row->cid;
+            }
+            elseif ($pidrow->data == 0 AND $active == FALSE){
+              $isconditional[] = $row->cid;
+            }
+          }
+        }
+      }
+    }
+  }
+  return $isconditional;
+}
+
+function init_grades($grades, $type) {
+  $grade_chars = array('A', 'C', 'E');
+
+  foreach ($grade_chars as $g) {
+    $grades[$g.'b'][$type] = array();
+    $grades[$g.'p'][$type] = array();
+    $grades[$g.'pl'][$type] = array();
+    $grades[$g.'m'][$type] = array();
+    $grades[$g.'r'][$type] = array();
+    $grades[$g.'k'][$type] = array();
+  } // End foreach
+
+  return $grades;
+}
+
+function assign_grades($items, $question, $grades, $type) {
+  $grade_chars = array('A', 'C', 'E');
+
+  foreach($items as $value) {
+  if (strpos($value,'_') !== false) {
+      list($value, $uvalue) = explode('_', $value);
+      }
+    foreach ($grade_chars as $g) {
+      switch($value){
+        case $g.'b':
+          $grades[$g.'b'][$type][]= $question;
+          break;
+        case $g.'p':
+          $grades[$g.'p'][$type][]= $question;
+          break;
+        case $g.'pl':
+          $grades[$g.'pl'][$type][]= $question;
+          break;
+        case $g.'m':
+          $grades[$g.'m'][$type][]= $question;
+          break;
+        case $g.'r':
+          $grades[$g.'r'][$type][]= $question;
+          break;
+        case $g.'k':
+          $grades[$g.'k'][$type][]= $question;
+          break;
+      } // End switch
+    } // End foreach
+  } // End foreach
+
+  return $grades;
+}
+
+function count_grades($g, $type, $grades) {
+  $grades[$g][$type]['count'] = (
+    count($grades[$g.'b'][$type]) + 
+    count($grades[$g.'p'][$type]) +
+    count($grades[$g.'pl'][$type]) +
+    count($grades[$g.'m'][$type]) +
+    count($grades[$g.'r'][$type]) +
+    count($grades[$g.'k'][$type])
+  );
+
+  return $grades;
+}

@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * @file
+ * Install, schema and uninstall functions for the prim_form module.
+ */
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function prim_form_uninstall() {
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function prim_form_install() {
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function prim_form_schema() {
+}
+
+//addition of the matrix table
+function webform_update_7301() {
+  // Safety check to prevent recreating the webform_last_download table.
+  if (db_table_exists('prim_form')) {
+    return;
+  }
+  $schema['prim_form'] = array(
+    'description' => 'Table storing matrix layout.',
+    'fields' => array(
+      'mid' => array(
+        'description' => 'recordID',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The user identifier of a teacher form',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'abbreviation' => array(
+        'description' => 'Matrix row name',
+        'type' => 'varchar',
+        'length' => 5,
+        'not null' => TRUE,
+      ),
+      'weight' => array(
+        'description' => 'weight of Matrix items',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('aid'),
+  );
+  return $schema;
+}

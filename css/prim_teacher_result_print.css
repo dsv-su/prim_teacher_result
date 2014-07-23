@@ -1,0 +1,24 @@
+#sidebar-second,#header,#breadcrumb,#admin-menu,.region-page-top,#messages{
+	display:none;
+}
+
+#main{
+	margin:0 !important;
+}
+
+#content,.one-sidebar #content{
+	clear:both;
+	margin:0 auto;
+	width:100%;
+}
+
+.prim_matrix{
+	padding-left:15px;
+}
+
+.prim_matrix div{
+}
+
+.prim_empty_grade{
+	background:#000;
+}
