@@ -107,7 +107,7 @@ function prim_teacher_result_theme($existing, $type, $theme, $path) {
     'teacher_results_submissions' => array(
       'variables' => array('node' => NULL, 'components' => NULL, 'submissions' => NULL, 'node' => NULL, 'total_count' => NULL, 'pager_count' => NULL),
       'file' => 'includes/teacher.report.inc',
-    )
+    ),
     'prim_teacher_result_display_items_table_form' => array(
       'file' => 'includes/prim_teacher_result.admin.inc',
       'arguments' => array('form' => NULL)
