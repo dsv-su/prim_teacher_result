@@ -27,8 +27,12 @@ function prim_teacher_result_admin_form($form_state) {
         //The next two fields should both contain the applicable item title
         //Note how each field (name, id, and weight) is stored as a child of it's $row['id']. This allows each item to be displayed and acted upon as a row in a table.
          
-        $form[$row['mid']]['#item1'] = $row['name'];
+        $form[$row['mid']]['name'] = $row['name'];
         $form[$row['mid']]['name']['#value'] = $row['name'];
+
+        $form[$row['mid']]['abbrev'] = $row['abbreviation'];
+        $form[$row['mid']]['abbrev']['#value'] = $row['abbreviation'];
+
          
         //The id of the field must be included so each  
         $form[$row['mid']]['mid'] = array(
