@@ -15,7 +15,7 @@
  * @return
  *   system_settings_form($form)
  */
-function prim_teacher_result_admin_form($form, &$form_state) {
+function prim_teacher_result_admin_form($form_state) {
 
     $form = array();
     $db_probe = db_query("select * FROM {prim_matrix} order by weight");
@@ -27,17 +27,17 @@ function prim_teacher_result_admin_form($form, &$form_state) {
         //The next two fields should both contain the applicable item title
         //Note how each field (name, id, and weight) is stored as a child of it's $row['id']. This allows each item to be displayed and acted upon as a row in a table.
          
-        $form[$row['id']]['#item1'] = $row['name'];
-        $form[$row['id']]['name']['#value'] = $row['name'];
+        $form[$row['mid']]['#item1'] = $row['name'];
+        $form[$row['mid']]['name']['#value'] = $row['name'];
          
         //The id of the field must be included so each  
-        $form[$row['id']]['id'] = array(
+        $form[$row['mid']]['mid'] = array(
             '#type' => 'hidden',
             '#value' => $row['mid']
         );
          
         //This is the weight field that determines where the item is sorted. The delta value is half of the maximum number of items plus 1 that can be sorted in this table. For example, we can sort 41 items in this table (-20 to 20).
-        $form[$row['id']]['weight'] = array(
+        $form[$row['mid']]['weight'] = array(
             '#type' => 'weight',
             '#delta' => 20,
             '#default_value' => $row['weight']
