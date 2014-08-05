@@ -21,7 +21,7 @@ function prim_teacher_result_install() {
  * Implementation of hook_schema().
  */
 function prim_teacher_result_schema() {
-  $schema['prim_form'] = array(
+  $schema['prim_matrix'] = array(
     'description' => 'Table storing matrix layout.',
     'fields' => array(
       'mid' => array(
@@ -31,13 +31,13 @@ function prim_teacher_result_schema() {
         'not null' => TRUE,
       ),
       'name' => array(
-        'description' => 'The user identifier of a teacher form',
+        'description' => 'The name of the Matrix item',
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
       ),
       'abbreviation' => array(
-        'description' => 'Matrix row name',
+        'description' => 'Matrix row abbreviation',
         'type' => 'varchar',
         'length' => 5,
         'not null' => TRUE,
@@ -56,8 +56,8 @@ function prim_teacher_result_schema() {
 
 //addition of the matrix table
 function prim_teacher_result_update_7101() {
-  $schema['prim_form'] = array(
+  $schema['prim_matrix'] = array(
      // table definition array goes here
   );
-  db_create_table('prim_form', $schema['prim_form']);
+  db_create_table('prim_matrix', $schema['prim_matrix']);
 }

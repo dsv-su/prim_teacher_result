@@ -602,7 +602,7 @@ function count_grades($g, $type, $grades) {
 
 function theme_prim_teacher_result_display_items_table_form($form) {
   //This function is the instantiator of the sorter. Make sure the 0th paramater is the id of your table, and the 3rd paramater is the class of your weight variable
-    drupal_add_tabledrag('prim_form', 'order', 'sibling', 'theweight');
+    drupal_add_tabledrag('prim_matrix', 'order', 'sibling', 'theweight');
      
     //Define your table headers
     $header = array(
@@ -635,7 +635,7 @@ function theme_prim_teacher_result_display_items_table_form($form) {
     }
      
     //Finally, output the sortable table. Make sure the id variable is the same as the table id in drupal_add_tabledrag
-    $output = theme('table', $header, $rows, array('id' => 'prim_form'), "My Sorted Items");
+    $output = theme('table', $header, $rows, array('id' => 'prim_matrix'), "My Sorted Items");
     $output .= drupal_render($form);
     return $output;
  
