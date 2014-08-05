@@ -21,14 +21,6 @@ function prim_teacher_result_install() {
  * Implementation of hook_schema().
  */
 function prim_teacher_result_schema() {
-}
-
-//addition of the matrix table
-function webform_update_7001() {
-  // Safety check to prevent recreating the webform_last_download table.
-  if (db_table_exists('prim_form')) {
-    return;
-  }
   $schema['prim_form'] = array(
     'description' => 'Table storing matrix layout.',
     'fields' => array(
@@ -60,4 +52,12 @@ function webform_update_7001() {
     'primary key' => array('aid'),
   );
   return $schema;
+}
+
+//addition of the matrix table
+function prim_teacher_result_update_7101() {
+  $schema['prim_form'] = array(
+     // table definition array goes here
+  );
+  db_create_table('prim_form', $schema['prim_form']);
 }
