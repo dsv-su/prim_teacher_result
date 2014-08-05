@@ -47,5 +47,5 @@ function prim_teacher_result_admin_form($form, &$form_state) {
         '#type' => 'submit',
         '#value' => t('Save configuration'),
     );
-    return $form;
+    return system_settings_form($form);
 }
