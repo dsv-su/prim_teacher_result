@@ -607,7 +607,7 @@ function theme_prim_teacher_result_display_items_table_form($form) {
     //Define your table headers
     $header = array(
     t('Name'),
-    t('Abbreviation')
+    t('Abbreviation'),
     t('Weight'),
   );
   $rows = array();
