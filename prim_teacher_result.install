@@ -8,19 +8,19 @@
 /**
  * Implementation of hook_uninstall().
  */
-function prim_form_uninstall() {
+function prim_teacher_result_uninstall() {
 }
 
 /**
  * Implementation of hook_install().
  */
-function prim_form_install() {
+function prim_teacher_result_install() {
 }
 
 /**
  * Implementation of hook_schema().
  */
-function prim_form_schema() {
+function prim_teacher_result_schema() {
 }
 
 //addition of the matrix table
