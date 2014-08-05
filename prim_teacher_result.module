@@ -624,12 +624,12 @@ function theme_prim_teacher_result_display_items_table_form($form) {
             $row = array(
                 drupal_render($form[$key]['name']), 
                 drupal_render($form[$key]['abbreviation']), 
-                drupal_render($form[$key]['weight']), 
+                drupal_render($form[$key]['weight'])
+            ); 
             //Add to the $rows varaiable, which will be used to generate the sortable rows
               $rows[] = array(
                 'data' => $row,
                 'class' => 'draggable'
-              );
             );
         }
     }
