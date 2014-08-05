@@ -24,7 +24,7 @@ function prim_teacher_result_schema() {
 }
 
 //addition of the matrix table
-function webform_update_7301() {
+function webform_update_7001() {
   // Safety check to prevent recreating the webform_last_download table.
   if (db_table_exists('prim_form')) {
     return;
