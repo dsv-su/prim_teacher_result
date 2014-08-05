@@ -57,7 +57,34 @@ function prim_teacher_result_schema() {
 //addition of the matrix table
 function prim_teacher_result_update_7101() {
   $schema['prim_matrix'] = array(
-     // table definition array goes here
+      'description' => 'Table storing matrix layout.',
+      'fields' => array(
+      'mid' => array(
+        'description' => 'recordID',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The name of the Matrix item',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'abbreviation' => array(
+        'description' => 'Matrix row abbreviation',
+        'type' => 'varchar',
+        'length' => 5,
+        'not null' => TRUE,
+      ),
+      'weight' => array(
+        'description' => 'weight of Matrix items',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('aid'),
   );
   db_create_table('prim_matrix', $schema['prim_matrix']);
 }
