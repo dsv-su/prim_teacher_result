@@ -17,8 +17,8 @@
  */
 function prim_teacher_result_admin_form($form, &$form_state) {
 
-  $form = array();
-    $db_probe = db_query("select * FROM prim_matrix order by weight");
+    $form = array();
+    $db_probe = db_query("select * FROM {prim_matrix} order by weight");
  
     $form['#tree'] = TRUE;
     while ($row = db_fetch_array($db_probe)) {
@@ -27,9 +27,8 @@ function prim_teacher_result_admin_form($form, &$form_state) {
         //The next two fields should both contain the applicable item title
         //Note how each field (name, id, and weight) is stored as a child of it's $row['id']. This allows each item to be displayed and acted upon as a row in a table.
          
-        $form[$row['id']]['#item'] = $row['name'];
+        $form[$row['id']]['#item1'] = $row['name'];
         $form[$row['id']]['name']['#value'] = $row['name'];
-        $form[$row['id']]['abbreviation']['#value'] = $row['abbreviation'];
          
         //The id of the field must be included so each  
         $form[$row['id']]['id'] = array(
