@@ -18,7 +18,7 @@
 function prim_teacher_result_admin_form($form, &$form_state) {
 
   $form = array();
-    $db_probe = db_query("select * FROM prim_form order by weight");
+    $db_probe = db_query("select * FROM prim_matrix order by weight");
  
     $form['#tree'] = TRUE;
     while ($row = db_fetch_array($db_probe)) {
