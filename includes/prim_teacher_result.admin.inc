@@ -17,7 +17,7 @@
  */
 function prim_teacher_result_admin_form() {
 
-   $db_result = db_query( "select mid, name, weight from prim_matrix order by weight");   
+   $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight");   
     // create array and add one element called data
     $rows= array();
     $form['#tree'] = TRUE;
