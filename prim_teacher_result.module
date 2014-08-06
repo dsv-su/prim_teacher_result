@@ -110,6 +110,7 @@ function prim_teacher_result_theme($existing, $type, $theme, $path) {
     ),
     'prim_teacher_result_display_items_table_form' => array(
       'file' => 'includes/prim_teacher_result.admin.inc',
+      'render element' => 'form',
       'arguments' => array('form' => NULL)
     ),
   );
