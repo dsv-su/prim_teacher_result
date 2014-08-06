@@ -15,12 +15,15 @@
  * @return
  *   system_settings_form($form)
  */
-function prim_teacher_result_admin_form($form_state) {
+function prim_teacher_result_admin_form($form, &$form_state) {
 
     $form = array();
     $db_probe = db_query("select * FROM {prim_matrix} order by weight");
  
-    $form['#tree'] = TRUE;
+    $form = array(
+        '#tree' => TRUE,
+        '#parent_fields' => FALSE,
+    );    
     while ($row = db_fetch_array($db_probe)) {
         //Make sure all fields that need to be updated in the database (generally, only the ID and weight fields need this for this type of form) and their corresponding database fields have the same name.
          
@@ -51,5 +54,50 @@ function prim_teacher_result_admin_form($form_state) {
         '#type' => 'submit',
         '#value' => t('Save configuration'),
     );
-    return system_settings_form($form);
+    return $form;
+}
+
+function theme_prim_teacher_result_display_items_table_form($variables) {
+
+    $form = $variables['form'];
+  //This function is the instantiator of the sorter. Make sure the 0th paramater is the id of your table, and the 3rd paramater is the class of your weight variable
+    drupal_add_tabledrag('prim_matrix', 'name', 'sibling', 'theweight');
+     
+
+    $errors = form_get_errors() != FALSE ? form_get_errors() : array();
+    //Define your table headers
+    $header = array(
+    t('Name'),
+    t('Abbreviation'),
+    t('Weight'),
+    );
+    $rows = array();
+ 
+    //Loop through each item to display in the sortable table
+    foreach (element_children($form) as $key) {
+        if (isset($form[$key]['mid'])) {
+             
+            //Make this variable the weight class defined in the drupal_add_tabledrag function.
+            $form[$key]['weight']['#attributes']['class'] = 'theweight';
+     
+            $row = array();
+            //Define columns
+            $row = array(
+                drupal_render($form[$key]['name']), 
+                drupal_render($form[$key]['abbreviation']), 
+                drupal_render($form[$key]['weight'])
+            ); 
+            //Add to the $rows varaiable, which will be used to generate the sortable rows
+              $rows[] = array(
+                'data' => $row,
+                'class' => 'draggable'
+            );
+        }
+    }
+     
+    //Finally, output the sortable table. Make sure the id variable is the same as the table id in drupal_add_tabledrag
+    $output = theme('table', $header, $rows, array('id' => 'prim_matrix'), "My Sorted Items");
+    $output .= drupal_render($form);
+    return $output;
+ 
 }
