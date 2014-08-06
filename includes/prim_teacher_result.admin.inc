@@ -24,6 +24,7 @@ function prim_teacher_result_admin_form() {
     $max = 60;
     foreach($db_result as $row){   
         $name = $row->name;
+        $abbreviation = $row->abbreviation;
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
         $form['slides'][$row->mid]['mid'] = array(
