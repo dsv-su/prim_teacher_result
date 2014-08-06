@@ -15,89 +15,93 @@
  * @return
  *   system_settings_form($form)
  */
-function prim_teacher_result_admin_form($form, &$form_state) {
+function prim_teacher_result_admin_form() {
 
-    $form = array();
-    $db_probe = db_query("select * FROM {prim_matrix} order by weight");
- 
-    $form = array(
-        '#tree' => TRUE,
-        '#parent_fields' => FALSE,
-    );    
-    while ($row = db_fetch_array($db_probe)) {
-        //Make sure all fields that need to be updated in the database (generally, only the ID and weight fields need this for this type of form) and their corresponding database fields have the same name.
-         
-        //The next two fields should both contain the applicable item title
-        //Note how each field (name, id, and weight) is stored as a child of it's $row['id']. This allows each item to be displayed and acted upon as a row in a table.
-         
-        $form[$row['mid']]['name'] = $row['name'];
-        $form[$row['mid']]['name']['#value'] = $row['name'];
-
-        $form[$row['mid']]['abbrev'] = $row['abbreviation'];
-        $form[$row['mid']]['abbrev']['#value'] = $row['abbreviation'];
-
-         
-        //The id of the field must be included so each  
-        $form[$row['mid']]['mid'] = array(
-            '#type' => 'hidden',
-            '#value' => $row['mid']
+   $db_result = db_query( "select mid, name, weight from prim_matrix order by weight");   
+    // create array and add one element called data
+    $rows= array();
+    $form['#tree'] = TRUE;
+    $max = 60;
+    foreach($db_result as $row){   
+        $name = $row->name;
+        if(strlen($name)>$max)
+            $name = substr($name,0,$max).' ...';
+        $form['slides'][$row->mid]['mid'] = array(
+            '#type' => 'hidden',      
+            '#default_value' => $row->mid,       
         );
-         
-        //This is the weight field that determines where the item is sorted. The delta value is half of the maximum number of items plus 1 that can be sorted in this table. For example, we can sort 41 items in this table (-20 to 20).
-        $form[$row['mid']]['weight'] = array(
+        // Textfield to hold content id.
+        $form['slides'][$row->mid]['name'] = array(
+            '#type' => 'item',        
+            '#title' => $name
+        );     
+        // This field is invisible, but contains sort info (weights).
+        $form['slides'][$row->mid]['weight'] = array(
             '#type' => 'weight',
-            '#delta' => 20,
-            '#default_value' => $row['weight']
+            '#title' => t('Weight'),
+            '#title_display' => 'invisible',
+            '#default_value' => $row->weight,
         );
     }
-    $form['submit'] = array(
-        '#type' => 'submit',
-        '#value' => t('Save configuration'),
-    );
+     
+    $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
     return $form;
 }
 
-function theme_prim_teacher_result_display_items_table_form($variables) {
+function prim_teacher_result_admin_submit($form, &$form_state) {
+    $slides = array(); 
+    foreach ($form_state['values']['slides'] as $slide) {   
+        $slides[] = array(
+            'id' => $slide['mid'],       
+            'weight' => $slide['weight'],
+        );         
+    }  
+    if (!empty($slides)) {
+        usort($slides, '_module_name_arraysort');
+    }  
+    $weight = 1;
+    foreach($slides as $slide){
+        $id = $slide['id'];
+        $sql = "UPDATE prim_matrix SET weight={$weight} WHERE mid = {$id}";
+        db_query($sql);
+        $weight++;
+    }
+  
+    drupal_set_message(t('Ordering have been saved.'));
+}
+ 
+// Custom array sort function by weight.
+function _prim_teacher_result_arraysort($a, $b) {
+    if (isset($a['weight']) && isset($b['weight'])) {
+        return $a['weight'] < $b['weight'] ? -1 : 1;
+    }
+    return 0;
+}
+
+function theme_prim_teacher_result_display_items_table_form($form) {
 
     $form = $variables['form'];
-  //This function is the instantiator of the sorter. Make sure the 0th paramater is the id of your table, and the 3rd paramater is the class of your weight variable
-    drupal_add_tabledrag('prim_matrix', 'name', 'sibling', 'theweight');
-     
-
-    $errors = form_get_errors() != FALSE ? form_get_errors() : array();
-    //Define your table headers
-    $header = array(
-    t('Name'),
-    t('Abbreviation'),
-    t('Weight'),
-    );
+  
     $rows = array();
- 
-    //Loop through each item to display in the sortable table
-    foreach (element_children($form) as $key) {
-        if (isset($form[$key]['mid'])) {
-             
-            //Make this variable the weight class defined in the drupal_add_tabledrag function.
-            $form[$key]['weight']['#attributes']['class'] = 'theweight';
-     
-            $row = array();
-            //Define columns
-            $row = array(
-                drupal_render($form[$key]['name']), 
-                drupal_render($form[$key]['abbreviation']), 
-                drupal_render($form[$key]['weight'])
-            ); 
-            //Add to the $rows varaiable, which will be used to generate the sortable rows
-              $rows[] = array(
-                'data' => $row,
-                'class' => 'draggable'
-            );
-        }
+    foreach (element_children($form['slides']) as $nid) {
+        $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
+        $rows[] = array(
+            'data' => array(
+                array('class' => array('slide-cross')),               
+                    drupal_render($form['slides'][$nid]['title']),
+                    drupal_render($form['slides'][$nid]['weight']),       
+                ),
+            'class' => array('draggable'),
+        );
     }
-     
-    //Finally, output the sortable table. Make sure the id variable is the same as the table id in drupal_add_tabledrag
-    $output = theme('table', $header, $rows, array('id' => 'prim_matrix'), "My Sorted Items");
-    $output .= drupal_render($form);
+  
+    $header = array('',t('title'),t('weight'));
+    $output = drupal_render($form['note']);
+    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
+    $output .= drupal_render_children($form);
+  
+    drupal_add_tabledrag('slides-order', 'order', 'sibling', 'slides-order-weight');
+  
     return $output;
  
 }
