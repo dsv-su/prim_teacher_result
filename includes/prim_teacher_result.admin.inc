@@ -35,6 +35,12 @@ function prim_teacher_result_admin_form() {
             '#type' => 'item',        
             '#title' => $name
         );     
+
+        // Textfield to hold content id.
+        $form['slides'][$row->mid]['abbreviation'] = array(
+            '#type' => 'item',        
+            '#title' => $abbreviation
+        );   
         // This field is invisible, but contains sort info (weights).
         $form['slides'][$row->mid]['weight'] = array(
             '#type' => 'weight',
@@ -89,13 +95,14 @@ function theme_prim_teacher_result_admin_form($variables) {
             'data' => array(
                 array('class' => array('slide-cross')),               
                     drupal_render($form['slides'][$nid]['name']),
+                    drupal_render($form['slides'][$nid]['abbreviation']),
                     drupal_render($form['slides'][$nid]['weight']),       
                 ),
             'class' => array('draggable'),
         );
     }
   
-    $header = array('',t('name'),t('weight'));
+    $header = array('',t('name'),t('abbreviation'),t('weight'));
     $output = drupal_render($form['note']);
     $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
     $output .= drupal_render_children($form);
