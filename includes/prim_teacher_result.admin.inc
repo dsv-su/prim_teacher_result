@@ -88,14 +88,14 @@ function theme_prim_teacher_result_admin_form($variables) {
         $rows[] = array(
             'data' => array(
                 array('class' => array('slide-cross')),               
-                    drupal_render($form['slides'][$nid]['title']),
+                    drupal_render($form['slides'][$nid]['name']),
                     drupal_render($form['slides'][$nid]['weight']),       
                 ),
             'class' => array('draggable'),
         );
     }
   
-    $header = array('',t('title'),t('weight'));
+    $header = array('',t('name'),t('weight'));
     $output = drupal_render($form['note']);
     $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
     $output .= drupal_render_children($form);
