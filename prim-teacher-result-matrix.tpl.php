@@ -19,9 +19,9 @@ foreach($db_result as $row){
 ?>
   <tr>
     <td class="prim_matrix_capability"><?php $row->name ?></td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['E' . <?php $row->abbreviation ?> ])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['C' . <?php $row->abbreviation ?>])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['A' . <?php $row->abbreviation ?>])); ?>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['E' . print $row->abbreviation])); ?>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['C' . print $row->abbreviation])); ?>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['A' . print $row->abbreviation])); ?>
   </tr>
   <?php
 }
