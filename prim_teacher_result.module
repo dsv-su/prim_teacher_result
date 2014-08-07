@@ -201,6 +201,12 @@ function prim_teacher_result_menu() {
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
+  $items['admin/prim/prim_teacher_result'] = array(
+    'title' => 'Add Matix Category',
+    'description' => 'Add new item to Prim Matrix table',
+    'page callback' => 'prim_teacher_result_admin_add',
+    'type' => MENU_LOCAL_ACTION,
+  );
   return $items;
 }
 
