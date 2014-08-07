@@ -64,7 +64,7 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
         );         
     }  
     if (!empty($slides)) {
-        usort($slides, '_module_name_arraysort');
+        usort($slides, '_prim_teacher_result_arraysort');
     }  
     $weight = 1;
     foreach($slides as $slide){
@@ -78,7 +78,7 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
 }
  
 // Custom array sort function by weight.
-function _prim_teacher_result_admin_form_arraysort($a, $b) {
+function _prim_teacher_result_arraysort($a, $b) {
     if (isset($a['weight']) && isset($b['weight'])) {
         return $a['weight'] < $b['weight'] ? -1 : 1;
     }
