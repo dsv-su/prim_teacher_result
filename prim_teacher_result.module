@@ -201,11 +201,13 @@ function prim_teacher_result_menu() {
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result'] = array(
-    'title' => 'Add Matix Category',
-    'description' => 'Add new item to Prim Matrix table',
-    'page callback' => 'prim_teacher_result_admin_add',
+  $items['admin/prim/prim_teacher_result/add'] = array(
+    'title' => 'Add Category',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('prim_teacher_result_admin_category', 'add', NULL, 4),
+    'access arguments' => array('administer Prim matrix'),
     'type' => MENU_LOCAL_ACTION,
+    'file' => 'includes/prim_teacher_result.admin.inc',
   );
   return $items;
 }
