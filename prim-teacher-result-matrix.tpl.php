@@ -4,6 +4,8 @@
 if(in_array('print_pdf', module_list()) && arg(0) != 'printpdf') {
   print print_pdf_insert_link(); 
 }
+$db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight"); 
+$rows= array();
 ?>
 <table class="prim_matrix">
   <tr>
@@ -12,49 +14,18 @@ if(in_array('print_pdf', module_list()) && arg(0) != 'printpdf') {
     <td class="prim_matrix_title">C</td>
     <td class="prim_matrix_title">A</td>
   </tr>
-
+<?php
+foreach($db_result as $row){
+?>
   <tr>
-    <td class="prim_matrix_capability">Begrepp</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Eb'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Cb'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ab'])); ?>
+    <td class="prim_matrix_capability"><?php $row->name ?></td>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['E<?php $row->abbreviation ?>'])); ?>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['C<?php $row->abbreviation ?>'])); ?>
+<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['A<?php $row->abbreviation ?>'])); ?>
   </tr>
-
-  <tr>
-    <td class="prim_matrix_capability">Procedur</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ep'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Cp'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ap'])); ?>
-  </tr>
-
-  <tr>
-    <td class="prim_matrix_capability">Problem-lösning</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Epl'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Cpl'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Apl'])); ?>
-  </tr>
-
-  <tr>
-    <td class="prim_matrix_capability">Modellering</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Em'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Cm'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Am'])); ?>
-  </tr>
-
-  <tr>
-    <td class="prim_matrix_capability">Resonemang</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Er'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Cr'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ar'])); ?>
-  </tr>
-
-  <tr>
-    <td class="prim_matrix_capability">Kommunikation</td>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ek'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ck'])); ?>
-<?php print theme('prim_teacher_result_questions',array('grades'=>$variables['grades']['Ak'])); ?>
-  </tr>
-
+  <?php
+}
+?>
     <tr>
     <td></td>
     <td class="prim_matrix_title">
