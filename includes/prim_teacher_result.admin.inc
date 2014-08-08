@@ -99,7 +99,6 @@ function theme_prim_teacher_result_admin_form($variables) {
     drupal_add_tabledrag('prim-overview', 'order', 'sibling', 'prim-weight');
 
     $header = array(
-        '',
         t('name'),
         t('abbreviation'),
         t('weight'),
@@ -124,7 +123,8 @@ function theme_prim_teacher_result_admin_form($variables) {
 
         $row = array();
         $row[] = theme('indentation', array('size' => $element['#item']['depth'] - 1)) . drupal_render($element['name']);
-        $row[] = drupal_render($element['abbreviation']) . drupal_render($element['mid']) . drupal_render($element['weight']);
+        $row[] = theme('indentation', array('size' => $element['#item']['depth'] - 1)) . drupal_render($element['abbreviation']);
+        $row[] = drupal_render($element['mid']) . drupal_render($element['weight']);
         $row = array_merge($row, $operations);
 
         $row = array_merge(array('data' => $row), $element['#attributes']);
