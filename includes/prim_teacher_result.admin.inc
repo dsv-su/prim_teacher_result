@@ -25,6 +25,7 @@ function prim_teacher_result_admin_form() {
     foreach($db_result as $row){   
         $name = $row->name;
         $abbreviation = $row->abbreviation;
+        if ($name) {
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
         $form[$row->mid]['mid'] = array(
@@ -56,6 +57,7 @@ function prim_teacher_result_admin_form() {
             '#title_display' => 'invisible',
             '#default_value' => $row->weight,
         );
+    }
     }
      
     $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
@@ -107,8 +109,6 @@ function theme_prim_teacher_result_admin_form($variables) {
   
     $rows = array();
     foreach (element_children($form) as $nid) {
-        if (isset($form[$mlid]['hidden'])) {
-
         $element = &$form[$nid];
         // Build a list of operations.
         $operations = array();
@@ -132,7 +132,6 @@ function theme_prim_teacher_result_admin_form($variables) {
         $row = array_merge(array('data' => $row), $element['#attributes']);
         $row['class'][] = 'draggable';
         $rows[]= $row;
-    }
     }
 
     $output = '';
