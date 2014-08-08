@@ -65,25 +65,42 @@ function prim_teacher_result_admin_form() {
 }
 
 function prim_teacher_result_admin_form_submit($form, &$form_state) {
-    $slides = array(); 
-    foreach ($form_state['values']['slides'] as $slide) {   
-        $slides[] = array(
-            'id' => $slide['mid'],       
-            'weight' => $slide['weight'],
-        );         
-    }  
-    if (!empty($slides)) {
-        usort($slides, '_prim_teacher_result_arraysort');
-    }  
-    $weight = 1;
-    foreach($slides as $slide){
-        $id = $slide['id'];
-        $sql = "UPDATE prim_matrix SET weight={$weight} WHERE mid = {$id}";
-        db_query($sql);
-        $weight++;
+    // When dealing with saving menu items, the order in which these items are
+    // saved is critical. If a changed child item is saved before its parent,
+    // the child item could be saved with an invalid path past its immediate
+    // parent. To prevent this, save items in the form in the same order they
+    // are sent by $_POST, ensuring parents are saved first, then their children.
+    // See http://drupal.org/node/181126#comment-632270
+    $order = array_flip(array_keys($form_state['input'])); // Get the $_POST order.
+    $form = array_merge($order, $form); // Update our original form with the new order.
+
+    $updated_items = array();
+    $fields = array('weight');
+    foreach (element_children($form) as $mid) {
+        if (isset($form[$mid]['#item'])) {
+            $element = $form[$mid];
+            // Update any fields that have changed in this menu item.
+        foreach ($fields as $field) {
+            if ($element[$field]['#value'] != $element[$field]['#default_value']) {
+                $element['#item'][$field] = $element[$field]['#value'];
+                $updated_items[$mid] = $element['#item'];
+            }
+        }
+        // Hidden is a special case, the value needs to be reversed.
+        if ($element['hidden']['#value'] != $element['hidden']['#default_value']) {
+            // Convert to integer rather than boolean due to PDO cast to string.
+            $element['#item']['hidden'] = $element['hidden']['#value'] ? 0 : 1;
+            $updated_items[$mid] = $element['#item'];
+        }
     }
-  
-    drupal_set_message(t('Ordering have been saved.'));
+}
+
+  // Save all our changed items to the database.
+  foreach ($updated_items as $item) {
+    $item['customized'] = 1;
+    menu_link_save($item);
+  }
+  drupal_set_message(t('Your configuration has been saved.'));
 }
  
 // Custom array sort function by weight.
@@ -110,6 +127,7 @@ function theme_prim_teacher_result_admin_form($variables) {
     $rows = array();
     foreach (element_children($form) as $nid) {
         $element = &$form[$nid];
+        if ($element){
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
@@ -132,6 +150,7 @@ function theme_prim_teacher_result_admin_form($variables) {
         $row = array_merge(array('data' => $row), $element['#attributes']);
         $row['class'][] = 'draggable';
         $rows[]= $row;
+    }
     }
 
     $output = '';
