@@ -120,7 +120,7 @@ function theme_prim_teacher_result_admin_form($variables) {
         $row = array_merge($row, $operations);
     }
   
-    $header = array('',t('name'),t('abbreviation'),t('operations'),t('weight'));
+    $header = array('',t('name'),t('abbreviation'),t('weight'),t('operations'));
     $output = drupal_render($form['note']);
     $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
     $output .= drupal_render_children($form);
