@@ -48,7 +48,7 @@ function prim_teacher_result_admin_form() {
         $operations['edit'] = array('#type' => 'link', '#title' => t('edit'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/edit');
         $operations['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/delete');
         $form['slides'][$row->mid]['operations'] = $operations;
-        
+
         // This field is invisible, but contains sort info (weights).
         $form['slides'][$row->mid]['weight'] = array(
             '#type' => 'weight',
@@ -104,6 +104,7 @@ function theme_prim_teacher_result_admin_form($variables) {
                 array('class' => array('slide-cross')),               
                     drupal_render($form['slides'][$nid]['name']),
                     drupal_render($form['slides'][$nid]['abbreviation']),
+                    drupal_render($form['slides'][$nid]['operations']),
                     drupal_render($form['slides'][$nid]['weight']),       
                 ),
             'class' => array('draggable'),
