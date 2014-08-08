@@ -45,8 +45,8 @@ function prim_teacher_result_admin_form() {
 
         // Build a list of operations.
         $operations = array();
-        $operations['edit'] = array('#type' => 'link', '#title' => t('edit'), '#href' => 'admin/prim/prim_teacher_result/category' . $item['mlid'] . '/edit');
-        $operations['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => 'admin/prim/prim_teacher_result/category' . $item['mlid'] . '/delete');
+        $operations['edit'] = array('#type' => 'link', '#title' => t('edit'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/edit');
+        $operations['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/delete');
         $form['slides'][$row->mid]['operations'] = $operations;
     }
         // This field is invisible, but contains sort info (weights).
