@@ -133,6 +133,9 @@ function theme_prim_teacher_result_admin_form($variables) {
     }
 
     $output = '';
+    if (empty($rows)) {
+        $rows[] = array(array('data' => $form['#empty_text'], 'colspan' => '7'));
+    }
     $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'prim-overview')));
     $output .= drupal_render_children($form);
   
