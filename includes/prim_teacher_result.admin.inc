@@ -117,7 +117,7 @@ function theme_prim_teacher_result_admin_form($variables) {
                 ),
             'class' => array('draggable'),
         );
-        $row = array_merge($row, $operations);
+        $rows = array_merge($rows, $operations);
     }
   
     $header = array('',t('name'),t('abbreviation'),t('weight'),t('operations'));
