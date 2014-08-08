@@ -107,6 +107,8 @@ function theme_prim_teacher_result_admin_form($variables) {
   
     $rows = array();
     foreach (element_children($form) as $nid) {
+        if (isset($form[$mlid]['hidden'])) {
+
         $element = &$form[$nid];
         // Build a list of operations.
         $operations = array();
@@ -130,6 +132,7 @@ function theme_prim_teacher_result_admin_form($variables) {
         $row = array_merge(array('data' => $row), $element['#attributes']);
         $row['class'][] = 'draggable';
         $rows[]= $row;
+    }
     }
 
     $output = '';
