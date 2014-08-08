@@ -98,17 +98,25 @@ function theme_prim_teacher_result_admin_form($variables) {
   
     $rows = array();
     foreach (element_children($form['slides']) as $nid) {
+        // Build a list of operations.
+        $operations = array();
+        foreach (element_children($element['operations']) as $op) {
+          $operations[] = array('data' => drupal_render($element['operations'][$op]), 'class' => array('menu-operations'));
+        }
+        while (count($operations) < 2) {
+          $operations[] = '';
+        }
         $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
         $rows[] = array(
             'data' => array(
                 array('class' => array('slide-cross')),               
                     drupal_render($form['slides'][$nid]['name']),
                     drupal_render($form['slides'][$nid]['abbreviation']),
-                    drupal_render($form['slides'][$nid]['operations']),
                     drupal_render($form['slides'][$nid]['weight']),       
                 ),
             'class' => array('draggable'),
         );
+        $row = array_merge($row, $operations);
     }
   
     $header = array('',t('name'),t('abbreviation'),t('operations'),t('weight'));
