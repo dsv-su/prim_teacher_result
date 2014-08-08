@@ -122,9 +122,9 @@ function theme_prim_teacher_result_admin_form($variables) {
         $element['weight']['#attributes']['class'] = array('prim-weight');
 
         $row = array();
-        $row[] = theme('indentation', drupal_render($element['name']);
-        $row[] = theme('indentation', drupal_render($element['abbreviation']);
-        $row[] = drupal_render($element['mid']) . drupal_render($element['weight']);
+        $row[] = drupal_render($element['name']);
+        $row[] = drupal_render($element['abbreviation']);
+        $row[] = drupal_render($element['weight']);
         $row = array_merge($row, $operations);
 
         $row = array_merge(array('data' => $row), $element['#attributes']);
