@@ -98,6 +98,7 @@ function theme_prim_teacher_result_admin_form($variables) {
   
     $rows = array();
     foreach (element_children($form['slides']) as $nid) {
+        $element = &$form[$nid];
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
