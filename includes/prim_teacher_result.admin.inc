@@ -108,8 +108,8 @@ function theme_prim_teacher_result_admin_form($variables) {
             while (count($operations) < 2) {
                 $operations[] = '';
             }
-            $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
-            $rows[] = array(
+            $row = array();
+            $row[] = array(
                 'data' => array(
                     array('class' => array('slide-cross')),               
                         drupal_render($form['slides'][$nid]['name']),
@@ -117,8 +117,9 @@ function theme_prim_teacher_result_admin_form($variables) {
                         drupal_render($form['slides'][$nid]['weight']),       
                     ),
             );
-            $rows = array_merge($row, $operations);
-            $rows['class'][] = 'draggable';
+            $row = array_merge($row, $operations);
+            $row['class'][] = 'draggable';
+            $rows[]= $row;
         }
     }
   
