@@ -117,8 +117,8 @@ function theme_prim_teacher_result_admin_form($variables) {
                         drupal_render($form['slides'][$nid]['weight']),       
                     ),
             );
-            $row = array_merge($row, $operations);
-            $row['class'][] = 'draggable';
+            $rows = array_merge($row, $operations);
+            $rows['class'][] = 'draggable';
         }
     }
   
