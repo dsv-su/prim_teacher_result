@@ -116,9 +116,9 @@ function theme_prim_teacher_result_admin_form($variables) {
                         drupal_render($form['slides'][$nid]['abbreviation']),
                         drupal_render($form['slides'][$nid]['weight']),       
                     ),
-                'class' => array('draggable'),
             );
             $row = array_merge($row, $operations);
+            $row['class'][] = 'draggable';
         }
     }
   
