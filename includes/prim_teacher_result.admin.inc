@@ -27,18 +27,18 @@ function prim_teacher_result_admin_form() {
         $abbreviation = $row->abbreviation;
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
-        $form[$row->mid]['mid'] = array(
+        $form['slides'][$row->mid]['mid'] = array(
             '#type' => 'hidden',      
             '#default_value' => $row->mid,       
         );
         // Textfield to hold content id.
-        $form[$row->mid]['name'] = array(
+        $form['slides'][$row->mid]['name'] = array(
             '#type' => 'item',        
             '#title' => $name
         );     
 
         // Textfield to hold content id.
-        $form[$row->mid]['abbreviation'] = array(
+        $form['slides'][$row->mid]['abbreviation'] = array(
             '#type' => 'item',        
             '#title' => $abbreviation
         );   
@@ -47,10 +47,10 @@ function prim_teacher_result_admin_form() {
         $operations = array();
         $operations['edit'] = array('#type' => 'link', '#title' => t('edit'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/edit');
         $operations['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/delete');
-        $form[$row->mid]['operations'] = $operations;
+        $form['slides'][$row->mid]['operations'] = $operations;
 
         // This field is invisible, but contains sort info (weights).
-        $form[$row->mid]['weight'] = array(
+        $form['slides'][$row->mid]['weight'] = array(
             '#type' => 'weight',
             '#title' => t('Weight'),
             '#title_display' => 'invisible',
@@ -97,35 +97,35 @@ function theme_prim_teacher_result_admin_form($variables) {
     $form = $variables['form'];
   
     $rows = array();
-    foreach (element_children($form) as $mid) {
-        $element = &$form[$mid];
+    foreach (element_children($form['slides']) as $nid) {
+        $element = &$form[$nid];
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
-          $operations[] = array('data' => drupal_render($element['operations'][$op]), 'class' => array('prim-operations'));
+          $operations[] = array('data' => drupal_render($element['operations'][$op]), 'class' => array('menu-operations'));
         }
         while (count($operations) < 2) {
           $operations[] = '';
         }
-        $form[$nid]['weight']['#attributes']['class'] = array('prim-weight');
+        $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
         $rows[] = array(
             'data' => array(
-                array('class' => array('prim-cross')),               
-                    drupal_render($form[$mid]['name']),
-                    drupal_render($form[$mid]['abbreviation']),
-                    drupal_render($form[$mid]['weight']),       
+                array('class' => array('slide-cross')),               
+                    drupal_render($form['slides'][$nid]['name']),
+                    drupal_render($form['slides'][$nid]['abbreviation']),
+                    drupal_render($form['slides'][$nid]['weight']),       
                 ),
             'class' => array('draggable'),
         );
-        $rows = array_merge($rows, $operations);
+        $row = array_merge($row, $operations);
     }
   
     $header = array('',t('name'),t('abbreviation'),t('weight'),t('operations'));
     $output = drupal_render($form['note']);
-    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'prim-order')));
+    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
     $output .= drupal_render_children($form);
   
-    drupal_add_tabledrag('prim-order', 'order', 'sibling', 'prim-weight');
+    drupal_add_tabledrag('slides-order', 'order', 'sibling', 'slides-order-weight');
   
     return $output;
  
