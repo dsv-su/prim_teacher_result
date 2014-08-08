@@ -25,21 +25,20 @@ function prim_teacher_result_admin_form() {
     foreach($db_result as $row){   
         $name = $row->name;
         $abbreviation = $row->abbreviation;
-        if ($name) {
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
-        $form[$row->mid]['mid'] = array(
+        $form['slides'][$row->mid]['mid'] = array(
             '#type' => 'hidden',      
             '#default_value' => $row->mid,       
         );
         // Textfield to hold content id.
-        $form[$row->mid]['name'] = array(
+        $form['slides'][$row->mid]['name'] = array(
             '#type' => 'item',        
             '#title' => $name
         );     
 
         // Textfield to hold content id.
-        $form[$row->mid]['abbreviation'] = array(
+        $form['slides'][$row->mid]['abbreviation'] = array(
             '#type' => 'item',        
             '#title' => $abbreviation
         );   
@@ -48,16 +47,15 @@ function prim_teacher_result_admin_form() {
         $operations = array();
         $operations['edit'] = array('#type' => 'link', '#title' => t('edit'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/edit');
         $operations['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => 'admin/prim/prim_teacher_result/category/' . $row->mid . '/delete');
-        $form[$row->mid]['operations'] = $operations;
+        $form['slides'][$row->mid]['operations'] = $operations;
 
         // This field is invisible, but contains sort info (weights).
-        $form[$row->mid]['weight'] = array(
+        $form['slides'][$row->mid]['weight'] = array(
             '#type' => 'weight',
             '#title' => t('Weight'),
             '#title_display' => 'invisible',
             '#default_value' => $row->weight,
         );
-    }
     }
      
     $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
@@ -65,42 +63,25 @@ function prim_teacher_result_admin_form() {
 }
 
 function prim_teacher_result_admin_form_submit($form, &$form_state) {
-    // When dealing with saving menu items, the order in which these items are
-    // saved is critical. If a changed child item is saved before its parent,
-    // the child item could be saved with an invalid path past its immediate
-    // parent. To prevent this, save items in the form in the same order they
-    // are sent by $_POST, ensuring parents are saved first, then their children.
-    // See http://drupal.org/node/181126#comment-632270
-    $order = array_flip(array_keys($form_state['input'])); // Get the $_POST order.
-    $form = array_merge($order, $form); // Update our original form with the new order.
-
-    $updated_items = array();
-    $fields = array('weight');
-    foreach (element_children($form) as $mid) {
-        if (isset($form[$mid]['#item'])) {
-            $element = $form[$mid];
-            // Update any fields that have changed in this menu item.
-        foreach ($fields as $field) {
-            if ($element[$field]['#value'] != $element[$field]['#default_value']) {
-                $element['#item'][$field] = $element[$field]['#value'];
-                $updated_items[$mid] = $element['#item'];
-            }
-        }
-        // Hidden is a special case, the value needs to be reversed.
-        if ($element['hidden']['#value'] != $element['hidden']['#default_value']) {
-            // Convert to integer rather than boolean due to PDO cast to string.
-            $element['#item']['hidden'] = $element['hidden']['#value'] ? 0 : 1;
-            $updated_items[$mid] = $element['#item'];
-        }
+    $slides = array(); 
+    foreach ($form_state['values']['slides'] as $slide) {   
+        $slides[] = array(
+            'id' => $slide['mid'],       
+            'weight' => $slide['weight'],
+        );         
+    }  
+    if (!empty($slides)) {
+        usort($slides, '_prim_teacher_result_arraysort');
+    }  
+    $weight = 1;
+    foreach($slides as $slide){
+        $id = $slide['id'];
+        $sql = "UPDATE prim_matrix SET weight={$weight} WHERE mid = {$id}";
+        db_query($sql);
+        $weight++;
     }
-}
-
-  // Save all our changed items to the database.
-  foreach ($updated_items as $item) {
-    $item['customized'] = 1;
-    menu_link_save($item);
-  }
-  drupal_set_message(t('Your configuration has been saved.'));
+  
+    drupal_set_message(t('Ordering have been saved.'));
 }
  
 // Custom array sort function by weight.
@@ -114,51 +95,37 @@ function _prim_teacher_result_arraysort($a, $b) {
 function theme_prim_teacher_result_admin_form($variables) {
 
     $form = $variables['form'];
-
-    drupal_add_tabledrag('prim-overview', 'order', 'sibling', 'prim-weight');
-
-    $header = array(
-        t('name'),
-        t('abbreviation'),
-        t('weight'),
-        array('data' => t('Operations'), 'colspan' => '3'),
-    );
   
     $rows = array();
-    foreach (element_children($form) as $nid) {
+    foreach (element_children($form['slides']) as $nid) {
         $element = &$form[$nid];
-        if ($element){
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
-            $operations[] = array('data' => drupal_render($element['operations'][$op]), 'class' => array('prim-operations'));
+          $operations[] = array('data' => drupal_render($element['operations'][$op]), 'class' => array('menu-operations'));
         }
         while (count($operations) < 2) {
-            $operations[] = '';
+          $operations[] = '';
         }
-
-        // Add special classes to be used for tabledrag.js.
-        $element['mid']['#attributes']['class'] = array('prim-mid');
-        $element['weight']['#attributes']['class'] = array('prim-weight');
-
-        $row = array();
-        $row[] = drupal_render($element['name']);
-        $row[] = drupal_render($element['abbreviation']);
-        $row[] = drupal_render($element['weight']);
+        $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
+        $rows[] = array(
+            'data' => array(
+                array('class' => array('slide-cross')),               
+                    drupal_render($form['slides'][$nid]['name']),
+                    drupal_render($form['slides'][$nid]['abbreviation']),
+                    drupal_render($form['slides'][$nid]['weight']),       
+                ),
+            'class' => array('draggable'),
+        );
         $row = array_merge($row, $operations);
-
-        $row = array_merge(array('data' => $row), $element['#attributes']);
-        $row['class'][] = 'draggable';
-        $rows[]= $row;
     }
-    }
-
-    $output = '';
-    if (empty($rows)) {
-        $rows[] = array(array('data' => $form['#empty_text'], 'colspan' => '7'));
-    }
-    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'prim-overview')));
+  
+    $header = array('',t('name'),t('abbreviation'),t('weight'),t('operations'));
+    $output = drupal_render($form['note']);
+    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'slides-order')));
     $output .= drupal_render_children($form);
+  
+    drupal_add_tabledrag('slides-order', 'order', 'sibling', 'slides-order-weight');
   
     return $output;
  
