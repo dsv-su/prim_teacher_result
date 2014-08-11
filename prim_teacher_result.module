@@ -209,6 +209,13 @@ function prim_teacher_result_menu() {
     'type' => MENU_LOCAL_ACTION,
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
+  $items['admin/prim/prim_teacher_result/%mid/edit'] = array(
+    'title' => 'Edit Category',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', 4),
+    'access arguments' => array('administer Prim matrix'),
+    'file' => 'includes/prim_teacher_result.admin.inc',
+  );
   return $items;
 }
 
