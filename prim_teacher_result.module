@@ -193,7 +193,7 @@ function prim_teacher_result_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => 10,
   );
-  $items['admin/prim/prim_teacher_result'] = array(
+  $items['admin/prim/prim_teacher_result/%mid'] = array(
     'title' => 'Prim matrix',
     'description' => 'Configure Prim matrix settings.',
     'page callback' => 'drupal_get_form',
@@ -201,7 +201,7 @@ function prim_teacher_result_menu() {
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result/add'] = array(
+  $items['admin/prim/prim_teacher_result/%mid/add'] = array(
     'title' => 'Add Category',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('prim_teacher_result_admin_edit_item', 'add', NULL),
@@ -212,7 +212,7 @@ function prim_teacher_result_menu() {
   $items['admin/prim/prim_teacher_result/%mid/edit'] = array(
     'title' => 'Edit Category',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('prim_teacher_result_admin_edit_item', 'add', NULL),
+    'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', NULL),
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
