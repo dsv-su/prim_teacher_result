@@ -123,9 +123,9 @@ function theme_prim_teacher_result_admin_form($variables) {
     );
   
     $rows = array();
-    foreach (element_children($form) as $nid) {
-      if (isset($form[$nid]['hidden'])) {
-        $element = &$form[$nid];
+    foreach (element_children($form) as $mid) {
+      if (isset($form[$mid]['weight'])) {
+        $element = &$form[$mid];
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
