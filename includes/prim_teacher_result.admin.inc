@@ -25,7 +25,6 @@ function prim_teacher_result_admin_form() {
     foreach($db_result as $row){   
         $name = $row->name;
         $abbreviation = $row->abbreviation;
-        if ($name) {
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
         $form[$row->mid]['mid'] = array(
@@ -57,7 +56,6 @@ function prim_teacher_result_admin_form() {
             '#title_display' => 'invisible',
             '#default_value' => $row->weight,
         );
-    }
     }
      
     $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
