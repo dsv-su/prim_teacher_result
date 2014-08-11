@@ -57,7 +57,7 @@ function prim_teacher_result_admin_form() {
             '#default_value' => $row->weight,
         );
     }
-     
+    $form['actions'] = array('#type' => 'actions'); 
     $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
     return $form;
 }
@@ -170,18 +170,16 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   }
   else {
     // Get the human-readable menu title from the given menu name.
-    $titles = menu_get_menus();
-    $current_title = $titles[$item['menu_name']];
-
-    // Get the current breadcrumb and add a link to that menu's overview page.
-    $breadcrumb = menu_get_active_breadcrumb();
-    $breadcrumb[] = l($current_title, 'admin/structure/menu/manage/' . $item['menu_name']);
-    drupal_set_breadcrumb($breadcrumb);
+    $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight  where mid = " . $item );
+    $mid = $item->mid;
+    $name = $item->name;
+    $abbreviation = $item->abbreviation;
   }
+
   $form['actions'] = array('#type' => 'actions');
-  $form['link_title'] = array(
+  $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Menu link title'),
+    '#title' => t('Name of the Category'),
     '#default_value' => $item['link_title'],
     '#description' => t('The text to be used for this link in the menu.'),
     '#required' => TRUE,
