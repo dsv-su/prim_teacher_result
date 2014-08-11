@@ -127,7 +127,6 @@ function theme_prim_teacher_result_admin_form($variables) {
     $rows = array();
     foreach (element_children($form) as $nid) {
         $element = &$form[$nid];
-        if ($element){
         // Build a list of operations.
         $operations = array();
         foreach (element_children($element['operations']) as $op) {
@@ -150,7 +149,6 @@ function theme_prim_teacher_result_admin_form($variables) {
         $row = array_merge(array('data' => $row), $element['#attributes']);
         $row['class'][] = 'draggable';
         $rows[]= $row;
-    }
     }
 
     $output = '';
