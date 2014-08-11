@@ -163,6 +163,7 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   else {
     // Get the human-readable menu title from the given menu name.
     $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight  where mid = " . $item );
+    print $db_result;
     $mid = $db_result->mid;
     $name = $db_result->name;
     $abbreviation = $db_result->abbreviation;
@@ -210,11 +211,7 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
 function prim_teacher_result_admin_delete_item($item) {
   // Links defined via hook_menu may not be deleted. Updated items are an
   // exception, as they can be broken.
-  if ($item['module'] == 'system' && !$item['updated']) {
-    drupal_access_denied();
-    return;
-  }
-  return drupal_get_form('menu_item_delete_form', $item);
+  return drupal_get_form('prim_teacher_result_admin_delete_form', $item);
 }
 
 /**
