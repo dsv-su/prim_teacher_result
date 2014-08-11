@@ -109,7 +109,7 @@ function _prim_teacher_result_arraysort($a, $b) {
     return 0;
 }
 
-function theme_prim_teacher_result_admin_form($variables) {
+function theme_prim_teacher_result_admin_form_WHAT($variables) {
 
     $form = $variables['form'];
 
