@@ -160,6 +160,10 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
     // This is an add form, initialize the menu link.
     $item = array('name' => '', 'mid' => 0, 'abbreviation' => '', 'weight' => 0);
   }
+  else if ($type == 'edit') {
+    // This is an add form, initialize the menu link.
+    $item = array('name' => '', 'mid' => 0, 'abbreviation' => '', 'weight' => 0);
+  }
   else {
     // Get the human-readable menu title from the given menu name.
     $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight  where mid = " . $item );
