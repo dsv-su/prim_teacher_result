@@ -163,7 +163,7 @@ function theme_prim_teacher_result_admin_form($variables) {
 /**
  * Menu callback; Build the menu link editing form.
  */
-function theme_prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item, $menu) {
+function prim_teacher_result_admin_edit_item($form, &$form_state) {
   if ($type == 'add' || empty($item)) {
     // This is an add form, initialize the menu link.
     $item = array('link_title' => '', 'mlid' => 0, 'plid' => 0, 'menu_name' => $menu['menu_name'], 'weight' => 0, 'link_path' => '', 'options' => array(), 'module' => 'menu', 'expanded' => 0, 'hidden' => 0, 'has_children' => 0);
