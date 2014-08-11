@@ -96,18 +96,10 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
   // Save all our changed items to the database.
   foreach ($updated_items as $item) {
     $item['customized'] = 1;
-    menu_link_save($item);
   }
   drupal_set_message(t('Your configuration has been saved.'));
 }
  
-// Custom array sort function by weight.
-function _prim_teacher_result_arraysort($a, $b) {
-    if (isset($a['weight']) && isset($b['weight'])) {
-        return $a['weight'] < $b['weight'] ? -1 : 1;
-    }
-    return 0;
-}
 
 function theme_prim_teacher_result_admin_form($variables) {
 
@@ -210,4 +202,37 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save'));
 
   return $form;
+}
+
+/**
+ * Menu callback; Check access and present a confirm form for deleting a menu link.
+ */
+function prim_teacher_result_admin_delete_item($item) {
+  // Links defined via hook_menu may not be deleted. Updated items are an
+  // exception, as they can be broken.
+  if ($item['module'] == 'system' && !$item['updated']) {
+    drupal_access_denied();
+    return;
+  }
+  return drupal_get_form('menu_item_delete_form', $item);
+}
+
+/**
+ * Build a confirm form for deletion of a single menu link.
+ */
+function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
+  $form['#item'] = $item;
+  return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $item['name'])), 'admin/structure/menu/manage/' . $item['menu_name']);
+}
+
+/**
+ * Process menu delete form submissions.
+ */
+function prim_teacher_result_admin_delete_form_submit($form, &$form_state) {
+  $item = $form['#item'];
+  menu_link_delete($item['mlid']);
+  $t_args = array('%title' => $item['link_title']);
+  drupal_set_message(t('The menu link %title has been deleted.', $t_args));
+  watchdog('menu', 'Deleted menu link %title.', $t_args, WATCHDOG_NOTICE);
+  $form_state['redirect'] = 'admin/structure/menu/manage/' . $item['menu_name'];
 }
