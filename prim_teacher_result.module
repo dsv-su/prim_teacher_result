@@ -209,17 +209,17 @@ function prim_teacher_result_menu() {
     'type' => MENU_LOCAL_ACTION,
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result/edit/%mid'] = array(
+  $items['admin/prim/prim_teacher_result/item/%mid/edit'] = array(
     'title' => 'Edit Category',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', 5),
+    'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', 4),
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result/delete/%mid'] = array(
+  $items['admin/prim/prim_teacher_result/item/%mid/delete'] = array(
     'title' => 'Edit Category',
     'page callback' => 'prim_teacher_result_admin_delete_item',
-    'page arguments' => array(5),
+    'page arguments' => array(4),
     'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
