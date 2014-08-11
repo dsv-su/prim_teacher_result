@@ -206,7 +206,6 @@ function prim_teacher_result_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('prim_teacher_result_admin_edit_item', 'add', NULL),
     'access callback' => 'prim_teacher_result_admin_form',
-    'access arguments' => array('administer Prim matrix'),
     'type' => MENU_LOCAL_ACTION,
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
@@ -214,7 +213,6 @@ function prim_teacher_result_menu() {
     'title' => 'Edit Category',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', 4),
-    'access arguments' => array('administer Prim matrix'),
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
   return $items;
