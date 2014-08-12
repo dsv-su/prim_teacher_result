@@ -237,7 +237,7 @@ function prim_teacher_result_admin_delete_item($item) {
 function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
   $form['#item'] = $item;
   $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item  ." order by weight");
-  $mid = $db_result->mid;
+  $mid = $db_result['mid']
   return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $mid)), 'admin/prim/prim_teacher_result/' . $mid . '/delete');
 }
 
