@@ -27,18 +27,18 @@ function prim_teacher_result_admin_form() {
         $abbreviation = $row->abbreviation;
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
-        $form['mid'] = array(
+        $form[$row->mid]['mid'] = array(
             '#type' => 'hidden',      
             '#default_value' => $row->mid,       
         );
         // Textfield to hold content id.
-        $form['name'] = array(
+        $form[$row->mid]['name'] = array(
             '#type' => 'item',        
             '#title' => $name
         );     
 
         // Textfield to hold content id.
-        $form['abbreviation'] = array(
+        $form[$row->mid]['abbreviation'] = array(
             '#type' => 'item',        
             '#title' => $abbreviation
         );   
@@ -50,7 +50,7 @@ function prim_teacher_result_admin_form() {
         $form[$row->mid]['operations'] = $operations;
 
         // This field is invisible, but contains sort info (weights).
-        $form['weight'] = array(
+        $form[$row->mid]['weight'] = array(
             '#type' => 'weight',
             '#title' => t('Weight'),
             '#title_display' => 'invisible',
@@ -67,7 +67,7 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
   //Change the order in the Database
   print_r($form_state['values']);
   die("\n<br/>DIE");
-  foreach ($form_state['values']['mid'] as $id => $item) {
+  foreach ($form_state['values'] as $id => $item) {
     db_query("UPDATE {prim_matrix} SET weight=%d WHERE id=%d",$item['weight'], $id);
   }
   drupal_set_message(t('Your configuration has been saved.'));
