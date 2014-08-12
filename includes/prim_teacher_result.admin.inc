@@ -65,7 +65,7 @@ function prim_teacher_result_admin_form() {
 function prim_teacher_result_admin_form_submit($form, &$form_state) {
 
   //Change the order in the Database
-  print_r($form_state);
+  print_r($form_state['values']);
   die("\n<br/>DIE");
   foreach ($form_state['values']['mid'] as $id => $item) {
     db_query("UPDATE {prim_matrix} SET weight=%d WHERE id=%d",$item['weight'], $id);
