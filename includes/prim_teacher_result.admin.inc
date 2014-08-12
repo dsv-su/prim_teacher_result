@@ -244,8 +244,8 @@ function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
  */
 function prim_teacher_result_admin_delete_form_submit($form, &$form_state) {
   $item = $form['#item'];
-  db_delete('prim_matrix')->condition('mid', $item['mid'])->execute();
-  $t_args = array('%title' => $item['name']);
+  db_delete('prim_matrix')->condition('mid', $item)->execute();
+  $t_args = array('%title' => $item);
   drupal_set_message(t('The category %title has been deleted.', $t_args));
   $form_state['redirect'] = 'admin/prim/prim_teacher_result/';
 }
