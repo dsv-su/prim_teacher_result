@@ -63,42 +63,11 @@ function prim_teacher_result_admin_form() {
 }
 
 function prim_teacher_result_admin_form_submit($form, &$form_state) {
-    // When dealing with saving menu items, the order in which these items are
-    // saved is critical. If a changed child item is saved before its parent,
-    // the child item could be saved with an invalid path past its immediate
-    // parent. To prevent this, save items in the form in the same order they
-    // are sent by $_POST, ensuring parents are saved first, then their children.
-    // See http://drupal.org/node/181126#comment-632270
-    $order = array_flip(array_keys($form_state['input'])); // Get the $_POST order.
-    $form = array_merge($order, $form); // Update our original form with the new order.
 
-    $updated_items = array();
-    $fields = array('weight');
-    foreach (element_children($form) as $mid) {
-        if (isset($form[$mid]['#item'])) {
-            $element = $form[$mid];
-            // Update any fields that have changed in this menu item.
-        foreach ($fields as $field) {
-            if ($element[$field]['#value'] != $element[$field]['#default_value']) {
-                $element['#item'][$field] = $element[$field]['#value'];
-                $updated_items[$mid] = $element['#item'];
-            }
-        }
-        // Hidden is a special case, the value needs to be reversed.
-        if ($element['hidden']['#value'] != $element['hidden']['#default_value']) {
-            // Convert to integer rather than boolean due to PDO cast to string.
-            $element['#item']['hidden'] = $element['hidden']['#value'] ? 0 : 1;
-            $updated_items[$mid] = $element['#item'];
-        }
-    }
-}
-
-  // Save all our changed items to the database.
-  foreach ($updated_items as $item) {
-    $item['customized'] = 1;
-    db_update('prim_matrix')->fields(array('weight' => $item['weight']))->condition('mid', $item['mid'])->execute();
+  //Change the order in the Database
+  foreach ($form_state['mid'] as $id => $item) {
+    db_query("UPDATE {prim_matrix} SET weight = :weight WHERE mid = :id", array(':weight' => $item['weight'], ':id' => $mid));
   }
-  print_r($form);
   drupal_set_message(t('Your configuration has been saved.'));
 }
  
