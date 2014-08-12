@@ -96,6 +96,7 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
   // Save all our changed items to the database.
   foreach ($updated_items as $item) {
     $item['customized'] = 1;
+    db_update('prim_matrix')->fields(array('weight' => $item['weight']))->condition('mid', $item['mid'])->execute();
   }
   drupal_set_message(t('Your configuration has been saved.'));
 }
