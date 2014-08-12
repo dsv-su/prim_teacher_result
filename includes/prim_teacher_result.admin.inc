@@ -65,8 +65,13 @@ function prim_teacher_result_admin_form() {
 function prim_teacher_result_admin_form_submit($form, &$form_state) {
 
   //Change the order in the Database
-  foreach ($form_state['values'][$form->mid]['mid'] as $mid => $item) {
-    db_query("UPDATE {prim_matrix} SET weight=%d WHERE id=%d",$item['weight'], $item['mid']);
+  foreach($form_state['values'] as $key=>$data){
+    //we are only interested in weight elements
+    if (substr($key,0,6)=='weight'){
+      //cunningly we have the DB id of the row in the element name
+      $id = str_replace('weight-','',$key);
+      db_query("UPDATE {prim_matrix} SET weight=%d WHERE id=%d",$data,$id);
+    }
   }
   drupal_set_message(t('Your configuration has been saved.'));
 }
