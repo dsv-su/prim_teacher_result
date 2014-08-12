@@ -211,7 +211,7 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
 function prim_teacher_result_admin_edit_item_submit($form, &$form_state) {
   $item = &$form_state['values'];
 
-  $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight where mid = " . $item['mid'] );
+  $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item['mid'] . " order by weight");
 
   if (!$db_result) {
     db_insert('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->execute();
