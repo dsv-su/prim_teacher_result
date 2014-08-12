@@ -71,10 +71,9 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
       //cunningly we have the DB id of the row in the element name
       $id = str_replace('weight-','',$key);
       db_query("UPDATE {prim_matrix} SET weight=%d WHERE id=%d",$data,$id);
-      drupal_set_message(t('Your configuration has been saved.') . print_r($id));
     }
   }
-  
+  drupal_set_message(t('Your configuration has been saved.') . print_r($form));
 }
  
 
