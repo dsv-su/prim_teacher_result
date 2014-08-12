@@ -98,6 +98,7 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
     $item['customized'] = 1;
     db_update('prim_matrix')->fields(array('weight' => $item['weight']))->condition('mid', $item['mid'])->execute();
   }
+  print_r($updated_items);
   drupal_set_message(t('Your configuration has been saved.'));
 }
  
