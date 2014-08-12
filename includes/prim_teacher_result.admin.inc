@@ -166,7 +166,7 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
     if ($db_result) {
       $item = array('mid' => $item);
       $testitem = $db_result->fetchObject();
-      print_r($testitem['name']);
+      print_r($testitem);
 
     }
   }
