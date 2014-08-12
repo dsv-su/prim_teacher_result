@@ -27,18 +27,18 @@ function prim_teacher_result_admin_form() {
         $abbreviation = $row->abbreviation;
         if(strlen($name)>$max)
             $name = substr($name,0,$max).' ...';
-        $form[$row->mid]['mid'] = array(
+        $form['mid'] = array(
             '#type' => 'hidden',      
             '#default_value' => $row->mid,       
         );
         // Textfield to hold content id.
-        $form[$row->mid]['name'] = array(
+        $form['name'] = array(
             '#type' => 'item',        
             '#title' => $name
         );     
 
         // Textfield to hold content id.
-        $form[$row->mid]['abbreviation'] = array(
+        $form['abbreviation'] = array(
             '#type' => 'item',        
             '#title' => $abbreviation
         );   
@@ -50,7 +50,7 @@ function prim_teacher_result_admin_form() {
         $form[$row->mid]['operations'] = $operations;
 
         // This field is invisible, but contains sort info (weights).
-        $form[$row->mid]['weight'] = array(
+        $form['weight'] = array(
             '#type' => 'weight',
             '#title' => t('Weight'),
             '#title_display' => 'invisible',
