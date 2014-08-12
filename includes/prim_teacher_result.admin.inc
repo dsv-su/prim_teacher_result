@@ -165,7 +165,9 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
     $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item  ." order by weight");
     if ($db_result) {
       $item = array('mid' => $item);
-      print_r($db_result->fetchObject());
+      $testitem = $db_result->fetchObject();
+      print_r($testitem['name']);
+
     }
   }
 
