@@ -163,15 +163,15 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   else {
     // Get the human-readable menu title from the given menu name.
     $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item);
-    foreach ($db_result as $item) {
-       //print $item['name'];
+    foreach ($db_result as $row) {
+       $item = $row[];
      }
   }
 
   $form['actions'] = array('#type' => 'actions');
-  //foreach (array('name', 'mid', 'abbreviation', 'weight') as $key) {
-    //$form[$key] = array('#type' => 'value', '#value' => $item[$key]);
-  //}
+  foreach (array('name', 'mid', 'abbreviation', 'weight') as $key) {
+    $form[$key] = array('#type' => 'value', '#value' => $item[$key]);
+  }
   // Any item created or edited via this interface is considered "customized".
   $form['customized'] = array('#type' => 'value', '#value' => 1);
   $form['original_item'] = array('#type' => 'value', '#value' => $item);
