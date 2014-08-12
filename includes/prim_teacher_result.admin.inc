@@ -211,10 +211,15 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
 function prim_teacher_result_admin_edit_item_submit($form, &$form_state) {
   $item = &$form_state['values'];
 
+  $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix order by weight  where mid = " . $item );
 
-  db_insert('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->execute();
-  drupal_set_message(t('Your configuration has been saved.'));
-  //$form_state['redirect'] = 'admin/structure/menu/manage/' . $item['menu_name'];
+  if (!$db_result) {
+    db_insert('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->execute();
+    drupal_set_message(t('Your category has been added'));
+  }
+  else {
+    db_update('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->condition('mid', $item['mid'])->execute();
+  }
 }
 
 /**
@@ -231,7 +236,7 @@ function prim_teacher_result_admin_delete_item($item) {
  */
 function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
   $form['#item'] = $item;
-  return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $item['name'])), 'admin/structure/menu/manage/' . $item['menu_name']);
+  return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $item['mid'])), 'admin/prim/prim_teacher_result/' . $item['menu_name'] . '/delete');
 }
 
 /**
@@ -239,9 +244,8 @@ function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
  */
 function prim_teacher_result_admin_delete_form_submit($form, &$form_state) {
   $item = $form['#item'];
-  menu_link_delete($item['mlid']);
-  $t_args = array('%title' => $item['link_title']);
-  drupal_set_message(t('The menu link %title has been deleted.', $t_args));
-  watchdog('menu', 'Deleted menu link %title.', $t_args, WATCHDOG_NOTICE);
-  $form_state['redirect'] = 'admin/structure/menu/manage/' . $item['menu_name'];
+  db_delete('prim_matrix')->condition('mid', $item['mid'])->execute();
+  $t_args = array('%title' => $item['name']);
+  drupal_set_message(t('The category %title has been deleted.', $t_args));
+  $form_state['redirect'] = 'admin/prim/prim_teacher_result/';
 }
