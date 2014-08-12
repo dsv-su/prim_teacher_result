@@ -169,9 +169,9 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   }
 
   $form['actions'] = array('#type' => 'actions');
-  foreach (array('name', 'mid', 'abbreviation', 'weight') as $key) {
-    $form[$key] = array('#type' => 'value', '#value' => $item[$key]);
-  }
+  //foreach (array('name', 'mid', 'abbreviation', 'weight') as $key) {
+    //$form[$key] = array('#type' => 'value', '#value' => $item[$key]);
+  //}
   // Any item created or edited via this interface is considered "customized".
   $form['customized'] = array('#type' => 'value', '#value' => 1);
   $form['original_item'] = array('#type' => 'value', '#value' => $item);
