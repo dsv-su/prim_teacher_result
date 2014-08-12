@@ -181,27 +181,40 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
     '#type' => 'textfield',
     '#title' => t('Name of the Category'),
     '#default_value' => $item['name'],
-    '#description' => t('The text to be used for this link in the menu.'),
+    '#description' => t('The name of the Category'),
     '#required' => TRUE,
   );
 
   $form['abbreviation'] = array(
-    '#type' => 'textarea',
+    '#type' => 'textfield',
     '#title' => t('Description'),
     '#default_value' => $item['abbreviation'],
     '#rows' => 1,
-    '#description' => t('Shown when hovering over the menu link.'),
+    '#description' => t('The Abbreviation that is used to connect this item to the result fields'),
+    '#required' => TRUE,
   );
   $form['weight'] = array(
     '#type' => 'weight',
     '#title' => t('Weight'),
     '#delta' => 50,
     '#default_value' => $item['weight'],
-    '#description' => t('Optional. In the menu, the heavier links will sink and the lighter links will be positioned nearer the top.'),
+    '#description' => t('Optional. In the Matrix, the heavier categories will sink and the lighter categories will be positioned nearer the top.'),
   );
   $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save'));
 
   return $form;
+}
+
+/**
+ * Process menu and menu item add/edit form submissions.
+ */
+function prim_teacher_result_admin_edit_item_submit($form, &$form_state) {
+  $item = &$form_state['values'];
+
+
+  db_insert('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->execute();
+  drupal_set_message(t('Your configuration has been saved.'));
+  //$form_state['redirect'] = 'admin/structure/menu/manage/' . $item['menu_name'];
 }
 
 /**
