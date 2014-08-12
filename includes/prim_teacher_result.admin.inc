@@ -213,12 +213,13 @@ function prim_teacher_result_admin_edit_item_submit($form, &$form_state) {
 
   $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item['mid'] . " order by weight");
 
-  if (!$db_result) {
+  if (empty($db_result)) {
     db_insert('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->execute();
     drupal_set_message(t('Your category has been added'));
   }
   else {
     db_update('prim_matrix')->fields(array('mid' => $item['mid'], 'name' => $item['name'], 'abbreviation' => $item['abbreviation'], 'weight' => $item['weight']))->condition('mid', $item['mid'])->execute();
+    drupal_set_message(t('Your category has been updated'));
   }
 }
 
