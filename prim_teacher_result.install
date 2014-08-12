@@ -22,8 +22,8 @@ function prim_teacher_result_install() {
  */
 function prim_teacher_result_schema() {
   $schema['prim_matrix'] = array(
-    'description' => 'Table storing matrix layout.',
-    'fields' => array(
+      'description' => 'Table storing matrix layout.',
+      'fields' => array(
       'mid' => array(
         'description' => 'recordID',
         'type' => 'serial',
@@ -49,7 +49,7 @@ function prim_teacher_result_schema() {
         'not null' => TRUE,
       ),
     ),
-    'primary key' => array('aid'),
+    'primary key' => array('mid'),
   );
   return $schema;
 }
