@@ -163,7 +163,10 @@ function prim_teacher_result_admin_edit_item($form, &$form_state, $type, $item) 
   else {
     // Get the human-readable menu title from the given menu name.
     $db_result = db_query( "select mid, name, abbreviation, weight from prim_matrix where mid = " . $item  ." order by weight");
-    $item = $db_result->fetchObject();
+    if ($db_result) {
+      $item = array('mid' => $item);
+      print $result->fetchCol(2);
+    }
   }
 
   $form['actions'] = array('#type' => 'actions');
