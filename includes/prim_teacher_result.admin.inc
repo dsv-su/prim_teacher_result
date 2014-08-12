@@ -236,7 +236,7 @@ function prim_teacher_result_admin_delete_item($item) {
  */
 function prim_teacher_result_admin_delete_form($form, &$form_state, $item) {
   $form['#item'] = $item;
-  return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $item['mid'])), 'admin/prim/prim_teacher_result/' . $item['menu_name'] . '/delete');
+  return confirm_form($form, t('Are you sure you want to delete the Matrix Category?', array('%item' => $form['mid'])), 'admin/prim/prim_teacher_result/' . $item['menu_name'] . '/delete');
 }
 
 /**
