@@ -45,7 +45,7 @@ function prim_teacher_result_schema() {
       'weight' => array(
         'description' => 'weight of Matrix items',
         'type' => 'int',
-        'unsigned' => TRUE,
+        'unsigned' => FALSE,
         'not null' => TRUE,
       ),
     ),
@@ -80,7 +80,7 @@ function prim_teacher_result_update_7101() {
       'weight' => array(
         'description' => 'weight of Matrix items',
         'type' => 'int',
-        'unsigned' => TRUE,
+        'unsigned' => FALSE,
         'not null' => TRUE,
       ),
     ),
