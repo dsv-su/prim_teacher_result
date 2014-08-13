@@ -209,7 +209,7 @@ function prim_teacher_result_menu() {
     'type' => MENU_LOCAL_ACTION,
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result/%/edit'] = array(
+  $items['admin/prim/prim_teacher_result/%prim_matrix/edit'] = array(
     'title' => 'Edit Category',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('prim_teacher_result_admin_edit_item', 'edit', 3),
@@ -217,7 +217,7 @@ function prim_teacher_result_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'includes/prim_teacher_result.admin.inc',
   );
-  $items['admin/prim/prim_teacher_result/%/delete'] = array(
+  $items['admin/prim/prim_teacher_result/%prim_matrix/delete'] = array(
     'title' => 'Edit Category',
     'page callback' => 'prim_teacher_result_admin_delete_item',
     'page arguments' => array(3),
@@ -621,4 +621,9 @@ function count_grades($g, $type, $grades) {
   );
 
   return $grades;
+}
+
+function prim_matrix_load($mid) {
+  // Load feed item somehow from feed id and return it, e.g:
+  return db_query("SELECT * FROM {prim_matric} WHERE mid = :mid", array(':mid' => $mid))->fetchObject();
 }
