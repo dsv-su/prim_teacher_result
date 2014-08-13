@@ -625,5 +625,5 @@ function count_grades($g, $type, $grades) {
 
 function prim_matrix_load($mid) {
   // Load feed item somehow from feed id and return it, e.g:
-  return db_query("SELECT * FROM {prim_matrix} WHERE mid = :mid", array(':mid' => $mid))->fetchObject();
+  return db_query("SELECT $mid FROM {prim_matrix} WHERE mid = :mid", array(':mid' => $mid))->fetchObject();
 }
