@@ -66,8 +66,8 @@ function prim_teacher_result_admin_form_submit($form, &$form_state) {
 
   //Change the order in the Database
   foreach ($form_state['values'] as $id => $item) {
-    $weight = intval($item['weight']);
-    db_update('prim_matrix')->fields(array('weight' => $weight ))->condition('mid', $id)->execute();
+    $weight = array('weight' => $item['weight']);
+    db_update('prim_matrix')->fields(array('weight' => $weight['weight'] ))->condition('mid', $id)->execute();
   }
   drupal_set_message(t('Your configuration has been saved.'));
 }
