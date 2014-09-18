@@ -400,7 +400,7 @@ function build_questions($grades, $condvals, $nid){
       ->fields('c', array('nid', 'cid', 'pid', 'name','form_key', 'type', 'extra'))
       ->condition('c.nid', $nid, '=')
       ->condition('c.extra', '%prim_question";a:1:{s:5:"check";i:1;}%', 'LIKE')
-      ->condition('c.pid', $pid, '=')
+      //->condition('c.pid', $pid, '=')
       ->orderBy('c.cid', 'ASC');
     $result = $query->execute();
 
