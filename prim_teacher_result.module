@@ -537,7 +537,7 @@ function check_for_conditional($nid, $sid, $active) {
       print($row->target);   
       $pidquery = db_select('webform_component', 'c');
       $pidquery
-        ->join('webform_submitted_data', 'sd', 'c.target = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
+        ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
       $pidquery
         ->fields('c', array('target'))
         ->fields('sd', array('data'))
