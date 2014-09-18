@@ -529,6 +529,7 @@ function check_for_conditional($nid, $sid, $active) {
     ->condition('c.nid', $nid, '=')
     ->orderBy('c.target', 'ASC');
   $result = $query->execute();
+  print_r($result); 
 
 
   foreach ($result as $row) {
@@ -539,8 +540,7 @@ function check_for_conditional($nid, $sid, $active) {
       $pidquery
         ->fields('c', array('cid'))
         ->fields('sd', array('data'))
-        ->condition('c.pid', $row->target, '=')   
-        ->condition('c.pid', $pid, '=')       
+        ->condition('c.pid', $row->target, '=')         
         ->condition('c.nid', $nid, '=')
         ->orderBy('c.pid', 'ASC');
       $pidresult = $pidquery->execute();
@@ -552,7 +552,6 @@ function check_for_conditional($nid, $sid, $active) {
           $isconditional[] = $row->target;
         }
       }
-      print_r($isconditional); 
     }
   }
   return $isconditional;
