@@ -526,7 +526,7 @@ function check_for_conditional($nid, $sid, $active) {
   $isconditional = array();
   $query = db_select('webform_conditional', 'c');
   $query
-    ->fields('c', array('nid', 'target'))
+    ->fields('c', array('nid', 'target',))
     ->condition('c.nid', $nid, '=')
     ->orderBy('c.target', 'ASC');
   $result = $query->execute();
@@ -535,15 +535,15 @@ function check_for_conditional($nid, $sid, $active) {
   foreach ($result as $row) {
     foreach ($row as $key => $value) {    
       print($row->target);   
-      $pidquery = db_select('webform_conditional', 'c');
+      $pidquery = db_select('webform_component', 'c');
       $pidquery
-        ->join('webform_submitted_data', 'sd', 'c.target = sd.pid AND c.nid = sd.nid AND sd.sid ='.$sid);          
+        ->join('webform_submitted_data', 'sd', 'c.target = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
       $pidquery
         ->fields('c', array('target'))
         ->fields('sd', array('data'))
-        ->condition('c.target', $row->target, '=')          
+        ->condition('c.pid', $row->target, '=')          
         ->condition('c.nid', $nid, '=')
-        ->orderBy('c.target', 'ASC');
+        ->orderBy('c.pid', 'ASC');
       $pidresult = $pidquery->execute();
       foreach ($pidresult as $pidrow) {
         if ($pidrow->data == 1 AND $active == TRUE){
