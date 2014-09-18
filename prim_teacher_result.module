@@ -403,6 +403,7 @@ function build_questions($grades, $condvals, $nid){
       //->condition('c.pid', $pid, '=')
       ->orderBy('c.cid', 'ASC');
     $result = $query->execute();
+    print_r($result);
 
     foreach ($result as $row) {
       $question = trim(str_replace('uppgift', '', $row->name), ' ');
