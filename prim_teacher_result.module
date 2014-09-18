@@ -539,7 +539,7 @@ function check_for_conditional($nid, $sid, $active) {
       $pidquery
         ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
       $pidquery
-        ->fields('c', array('target'))
+        ->fields('c', array('cid'))
         ->fields('sd', array('data'))
         ->condition('c.pid', $row->target, '=')          
         ->condition('c.nid', $nid, '=')
