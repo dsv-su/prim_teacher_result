@@ -339,7 +339,7 @@ function student_matrix($node) {
   //Find out which questions are active and which are not
   $isconditional = check_for_conditional(arg(1), arg(3), TRUE);
 
-  print_r($isconditional)
+  print_r($isconditional);
 
   //If there are no active questions
   if (empty($isconditional)){
