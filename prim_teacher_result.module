@@ -532,8 +532,7 @@ function check_for_conditional($nid, $sid, $active) {
 
 
   foreach ($result as $row) {
-    foreach ($row as $key => $value) {    
-      print($row->target);   
+    foreach ($row as $key => $value) {      
       $pidquery = db_select('webform_component', 'c');
       $pidquery
         ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
@@ -552,6 +551,7 @@ function check_for_conditional($nid, $sid, $active) {
           $isconditional[] = $row->target;
         }
       }
+      print($isconditional); 
     }
   }
   return $isconditional;
