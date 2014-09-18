@@ -531,10 +531,10 @@ function check_for_conditional($nid, $sid, $active) {
     ->orderBy('c.cid', 'ASC');
   $result = $query->execute();
 
-  print_r($result);
 
   foreach ($result as $row) {
     foreach ($row as $key => $value) {
+        print_r($row);
       if($key == 'extra') {
         $extra = unserialize($value);
         if (array_key_exists('webform_conditional_cid', $extra)){
