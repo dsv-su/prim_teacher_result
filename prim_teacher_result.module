@@ -363,6 +363,7 @@ function student_matrix($node) {
   //Find out Student Names value
   $elevensnamn = get_student_name(arg(1),arg(3)); 
 
+  print $grades; 
   //Theme the Matrix with the previously worked out values
   return theme('prim_teacher_result_matrix',array('grades'=>$grades, 'node'=>$node, 'elevensnamn'=>$elevensnamn));
 }
