@@ -356,6 +356,7 @@ function student_matrix($node) {
     $isconditional = check_for_conditional(arg(1), arg(3), FALSE);
     $grades = build_questions($grades, $isconditional, arg(1));
   }
+  print_r($isconditional);
   $grades = count_grades('E', 'all', $grades);
   $grades = count_grades('C', 'all', $grades);
   $grades = count_grades('A', 'all', $grades);
@@ -531,7 +532,6 @@ function check_for_conditional($nid, $sid, $active) {
     ->condition('c.nid', $nid, '=')
     ->orderBy('c.target', 'ASC');
   $result = $query->execute();
-  print_r($result); 
 
 
   foreach ($result as $row) {
