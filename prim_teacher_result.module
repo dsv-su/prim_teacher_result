@@ -530,7 +530,8 @@ function check_for_conditional($nid, $sid, $active) {
 
 
   foreach ($result as $row) {
-    foreach ($row as $key => $value) {      
+    foreach ($row as $key => $value) {  
+      print_r($row);    
       $isconditional[] = $row->target;
     }
   }
