@@ -544,6 +544,7 @@ function check_for_conditional($nid, $sid, $active) {
           ->condition('c.nid', $nid, '=')
           ->orderBy('c.target', 'ASC');
         $pidresult = $pidquery->execute();
+        print($pidquery);
         foreach ($pidresult as $pidrow) {
           if ($pidrow->data == 1 AND $active == TRUE){
             $isconditional[] = $row->cid;
@@ -551,7 +552,6 @@ function check_for_conditional($nid, $sid, $active) {
           elseif ($pidrow->data == 0 AND $active == FALSE){
             $isconditional[] = $row->cid;
           }
-          print_r($isconditional);
         }
     }
   }
