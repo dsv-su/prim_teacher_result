@@ -524,38 +524,34 @@ function item_cleaner($items, $value){
 //Find out which question areas are avaliable
 function check_for_conditional($nid, $sid, $active) {
   $isconditional = array();
-  $query = db_select('webform_component', 'c');
+  $query = db_select('webform_conditional', 'c');
   $query
-    ->fields('c', array('nid', 'cid', 'pid', 'name','form_key', 'type', 'extra'))
+    ->fields('c', array('nid', 'target'))
     ->condition('c.nid', $nid, '=')
-    ->condition('c.type', 'fieldset', '=')
-    ->orderBy('c.cid', 'ASC');
+    ->orderBy('c.target', 'ASC');
   $result = $query->execute();
 
 
   foreach ($result as $row) {
     foreach ($row as $key => $value) {
-      if($key == 'extra') {
+      if($key == 'target') {        
         $extra = unserialize($value);
-        if (array_key_exists('webform_conditional_cid', $extra)){
-          $extraArr = explode("\n", $extra['webform_conditional_cid']);
-          $pidquery = db_select('webform_component', 'c');
-          $pidquery
-            ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);
-          $pidquery
-            ->fields('c', array('cid'))
-            ->fields('sd', array('data'))
-            ->condition('c.cid', $extraArr[0], '=')
-            ->condition('c.nid', $nid, '=')
-            ->orderBy('c.cid', 'ASC');
-          $pidresult = $pidquery->execute();
-          foreach ($pidresult as $pidrow) {
-            if ($pidrow->data == 1 AND $active == TRUE){
-              $isconditional[] = $row->cid;
-            }
-            elseif ($pidrow->data == 0 AND $active == FALSE){
-              $isconditional[] = $row->cid;
-            }
+        $pidquery = db_select('webform_conditional', 'c');
+        $pidquery
+          ->join('webform_submitted_data', 'sd', 'c.cid = sd.cid AND c.nid = sd.nid AND sd.sid ='.$sid);          
+        $pidquery
+          ->fields('c', array('target'))
+          ->fields('sd', array('data'))
+          ->condition('c.target', $key, '=')          
+          ->condition('c.nid', $nid, '=')
+          ->orderBy('c.target', 'ASC');
+        $pidresult = $pidquery->execute();
+        foreach ($pidresult as $pidrow) {
+          if ($pidrow->data == 1 AND $active == TRUE){
+            $isconditional[] = $row->cid;
+          }
+          elseif ($pidrow->data == 0 AND $active == FALSE){
+            $isconditional[] = $row->cid;
           }
         }
       }
