@@ -338,6 +338,7 @@ function student_matrix($node) {
   $isconditional = array();
   //Find out which questions are active and which are not
   $isconditional = check_for_conditional(arg(1), arg(3), TRUE);
+  print_r($isconditional);
   //If there are no active questions
   if (empty($isconditional)){
     //Fill all fields with all empty Questions
@@ -353,7 +354,6 @@ function student_matrix($node) {
     $isconditional = check_for_conditional(arg(1), arg(3), FALSE);
     $grades = build_questions($grades, $isconditional, arg(1));
   }
-  print_r($grades);
   $grades = count_grades('E', 'all', $grades);
   $grades = count_grades('C', 'all', $grades);
   $grades = count_grades('A', 'all', $grades);
