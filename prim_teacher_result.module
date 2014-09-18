@@ -353,6 +353,7 @@ function student_matrix($node) {
     $isconditional = check_for_conditional(arg(1), arg(3), FALSE);
     $grades = build_questions($grades, $isconditional, arg(1));
   }
+  print_r($grades);
   $grades = count_grades('E', 'all', $grades);
   $grades = count_grades('C', 'all', $grades);
   $grades = count_grades('A', 'all', $grades);
@@ -363,7 +364,6 @@ function student_matrix($node) {
   //Find out Student Names value
   $elevensnamn = get_student_name(arg(1),arg(3)); 
 
-  print_r($grades); 
   //Theme the Matrix with the previously worked out values
   return theme('prim_teacher_result_matrix',array('grades'=>$grades, 'node'=>$node, 'elevensnamn'=>$elevensnamn));
 }
