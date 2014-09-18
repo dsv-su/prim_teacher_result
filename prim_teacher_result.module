@@ -539,7 +539,8 @@ function check_for_conditional($nid, $sid, $active) {
       $pidquery
         ->fields('c', array('cid'))
         ->fields('sd', array('data'))
-        ->condition('c.pid', $row->target, '=')          
+        ->condition('c.pid', $row->target, '=')   
+        ->condition('c.pid', $pid, '=')       
         ->condition('c.nid', $nid, '=')
         ->orderBy('c.pid', 'ASC');
       $pidresult = $pidquery->execute();
