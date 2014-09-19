@@ -61,6 +61,7 @@ function teacher_results_submissions($node, $user_filter, $pager_count) {
 
   $rows = array();
   foreach ($submissions as $sid => $submission) {
+    print_r($sid);
     // Set up student's name instead of submission id
     $fieldid = webform_get_cid($node, 'elevens_namn', webform_get_cid($node, 'bakgrundsinformation_om_eleven', 0));
     $elevensnamn = $submission->data[$fieldid]['value'][0];
