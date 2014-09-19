@@ -16,7 +16,7 @@ function theme_teacher_results_submissions_header($variables) {
 
   $columns = array(
     // Edited the title of the first column
-    array('data' => t('Student name'), 'field' => 'sid', 'sort' => 'desc'),
+    array('data' => t('Elevens namn'), 'field' => 'sid', 'sort' => 'desc'),
     array('data' => t('Submitted'), 'field' => 'submitted'),
   );
   if (webform_results_access($node)) {
