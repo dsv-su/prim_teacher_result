@@ -510,11 +510,11 @@ function item_cleaner($items, $value){
 //Find out which question areas are avaliable
 function check_for_conditional($nid, $sid, $active) {
   $isconditional = array();
-  $query = db_select('webform_conditional', 'c');
+  $query = db_select('webform_conditional_actions', 'a');
   $query
-    ->fields('c', array('nid', 'target',))
-    ->condition('c.nid', $nid, '=')
-    ->orderBy('c.target', 'ASC');
+    ->fields('a', array('nid', 'target'))
+    ->condition('a.nid', $nid, '=')
+    ->orderBy('a.target', 'ASC');
   $result = $query->execute();
 
 
